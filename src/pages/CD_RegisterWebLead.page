@@ -1,0 +1,144 @@
+<!--
+ - Created by BRITENET on 30.04.2018.
+ -->
+
+<apex:page id="CD_RegisterWebLead" showHeader="false" sideBar="false" controller="CD_RegisterWebLeadController">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style>
+        .msgIcon {
+            display: none!important
+        }
+        .customMessage * {
+            color: #fff!important
+        }
+        .customMessage {
+            margin: 5px 0!important;
+            max-width: 1280px;
+            opacity: 1!important;
+            width: 100%;
+            font-size: 12px;
+            border: 0px;
+            padding-left: 10px;
+        }
+        .message {
+            opacity: .1
+        }
+    </style>
+
+    <apex:slds />
+
+    <article class="slds-card" style="margin-top: 10px; padding-bottom: 10px; width: 80%; margin: auto;">
+
+        <div class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class="slds-tabs_default__item slds-is-active" title="Item One" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item">Item One</a></li>
+                <li class="slds-tabs_default__item" title="Item Two" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">Item Two</a></li>
+            </ul>
+            <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
+                <apex:form id="registerWebLeadForm">
+
+                    <apex:messages ></apex:messages>
+                    <apex:actionFunction name="saveNewLead" action="{!saveNewLead}" reRender="registerWebLeadForm" onComplete="closeSpinnerModal();">
+                    </apex:actionFunction>
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2>
+                                    <span class="slds-text-heading_small">Submit New Lead</span>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <fieldset class="slds-form--compound">
+                            <div class="slds-form-element__group">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element slds-size--1-of-2">
+                                        <label class="slds-form-element__label">Company Name</label>
+                                        <apex:inputField styleClass="slds-input" value="{!newLead.Company}"/>
+                                    </div>
+                                    <div class="slds-form-element slds-size--1-of-2">
+                                        <label class="slds-form-element__label">Company City</label>
+                                        <apex:inputField styleClass="slds-input" value="{!newLead.City}"/>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element slds-size--1-of-2">
+                                        <label class="slds-form-element__label">Contact First Name</label>
+                                        <apex:inputField styleClass="slds-input" value="{!newLead.FirstName}"/>
+                                    </div>
+                                    <div class="slds-form-element slds-size--1-of-2">
+                                        <label class="slds-form-element__label">Contact Last Name</label>
+                                        <apex:inputField styleClass="slds-input" value="{!newLead.LastName}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <footer class="slds-card__footer">
+                        <center>
+                            <apex:commandButton id="searchMechanicButton" onClick="saveNewLead(); openSpinnerModal();" reRender="none" styleClass="slds-button slds-button--brand" value="Submit"></apex:commandButton>
+                        </center>
+                    </footer>
+                </apex:form>            </div>
+            <div id="tab-default-2" class="slds-tabs_default__content slds-hide" role="tabpanel" aria-labelledby="tab-default-2__item">
+                Item Two Content
+            </div>
+        </div>
+
+    </article>
+
+    <div class="slds">
+        <div class="slds-modal" aria-hidden="false" role="dialog" id="spinnerModal">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div id="spinner" style="height: 6rem; z-index: 999">
+                        <div role="status" class="slds-spinner slds-spinner_medium">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop" id="backdrop1"></div>
+    </div>
+
+    <script>
+        j$ = jQuery.noConflict();
+        function openSpinnerModal(){
+            j$('#backdrop1').addClass('slds-backdrop--open');
+            j$('#spinnerModal').addClass('slds-fade-in-open');
+        }
+        //Modal Close
+        function closeSpinnerModal(){
+          j$('#spinnerModal').removeClass('slds-fade-in-open');
+          j$('#backdrop1').removeClass('slds-backdrop--open');
+        }
+    </script>
+
+    <script>
+    $(document).ready(function(){
+       overridePageMessages();
+    });
+
+    function overridePageMessages(){
+        var textureEffect = '';
+        //Uncomment below line for texture effect on page messages
+        //textureEffect = 'slds-theme--alert-texture';
+
+        $('.warningM3').addClass('slds-notify slds-notify--toast slds-theme--warning customMessage '+textureEffect);
+        $('.confirmM3').addClass('slds-notify slds-notify--alert slds-theme--success  customMessage '+textureEffect);
+        $('.errorM3').addClass('slds-notify slds-notify--alert slds-theme--error customMessage '+textureEffect);
+        $('.infoM3').addClass('slds-notify slds-notify--toast customMessage '+textureEffect);
+
+        $('.errorM3').removeClass('errorM3');
+        $('.confirmM3').removeClass('confirmM3');
+        $('.infoM3').removeClass('infoM3');
+        $('.warningM3').removeClass('warningM3');
+    }
+</script>
+
+</apex:page>

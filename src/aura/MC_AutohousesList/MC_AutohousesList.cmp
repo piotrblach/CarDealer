@@ -1,0 +1,31 @@
+<!--
+ - Created by BRITENET on 25.04.2018.
+ -->
+
+<aura:component description="MC_AutohousesList">
+
+    <aura:attribute name="autohouses" type="Account[]"/>
+    <aura:attribute name="selectedRowIndex" type="Integer"></aura:attribute>
+    <aura:registerEvent name="showAutohouseLocalizationEvent" type="c:ShowAutohouseLocalizationEvent"/>
+    <aura:registerEvent name="autohouseSelectedOnList" type="c:CD_AutohouseSelectedOnList"/>
+
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate" title="Name">Name</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <aura:iteration items="{!v.autohouses}" var="autohouse" indexVar="index">
+            <tr aura:id="row" onclick="{!c.tableRowClicked}" data-id="{!autohouse.Id}" data-index="{!index}">
+                <td data-label="Name">
+                    <lightning:formattedText value="{!autohouse.Name}"></lightning:formattedText>
+                    <!--<div class="slds-truncate" title="Name">{!autohouse.Name}</div>-->
+                </td>
+            </tr>
+        </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>

@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 26.04.2018.
+ -->
+
+<aura:event type="APPLICATION">
+    <aura:attribute name="autohouses" Type="Account[]"/>
+</aura:event>

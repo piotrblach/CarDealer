@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 07.05.2018.
+ -->
+
+<aura:event type="APPLICATION" description="CD_AutohouseSelectedOnList">
+    <aura:attribute name="autohouseId" Type="String"/>
+</aura:event>

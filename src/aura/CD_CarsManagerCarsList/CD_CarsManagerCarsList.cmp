@@ -1,0 +1,200 @@
+<!--
+ - Created by BRITENET on 09.05.2018.
+ -->
+
+<aura:component description="CD_CarsManagerCarsList" implements="flexipage:availableForAllPageTypes" access="global" controller="CD_CarsManagerController">
+    <aura:attribute name="cars" type="Product2[]"/>
+    <aura:attribute name="editedCarId" type="String" default=""/>
+
+    <aura:attribute name="searchedCar" type="Product2"
+                    default="{  'sobjectType': 'Product2',
+                                'Name': '', 'CD_VIN__c': '', 'CD_Year__c': '', 'CD_Model__c': ''}"/>
+    <aura:attribute name="newCar" type="Product2"
+                    default="{  'sobjectType': 'Product2',
+                                'Name': '', 'CD_VIN__c': '', 'CD_Year__c': '', 'CD_Model__c': ''}"/>
+
+    <aura:handler name="handleSaveSuccess" event="force:recordSaveSuccess" action="{!c.searchCars}" />
+    <aura:handler name="handleEdit" event="force:editRecord" action="{!c.searchCars}" />
+
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2>
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                           title="[object Object]">
+                            <span class="slds-text-heading_small">Search Cars</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <fieldset class="slds-form--compound">
+                <div class="slds-form-element__group">
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input label="Name" aura:id="searchCarForm" name="carName" value="{!v.searchedCar.Name}"></lightning:input>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input label="Model" aura:id="searchCarForm" name="carModel" value="{!v.searchedCar.CD_Model__c}"></lightning:input>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input label="VIN" aura:id="searchCarForm" name="carVIN" value="{!v.searchedCar.CD_VIN__c}"></lightning:input>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input label="Year" aura:id="searchCarForm" name="carYear" value="{!v.searchedCar.CD_Year__c}"></lightning:input>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <footer class="slds-card__footer">
+            <div class="slds-no-flex">
+                <lightning:button label="Search"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.searchCars}"/>
+                <lightning:button label="Clear"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.clearForm}"/>
+                <lightning:button label="Create New"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.openCreateCarModal}"/>
+            </div>
+        </footer>
+
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate" title="Name">Name</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Model">Model</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Year">Year</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="VIN">VIN</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Actions">Actions</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <aura:iteration items="{!v.cars}" var="car" indexVar="index">
+                <tr>
+                    <td data-label="Name">
+                        <lightning:formattedText value="{!car.Name}"></lightning:formattedText>
+                    </td>
+                    <td data-label="Model">
+                        <lightning:formattedText value="{!car.CD_Model__c}"></lightning:formattedText>
+                    </td>
+                    <td data-label="Year">
+                        <lightning:formattedDateTime value="{!car.CD_Year__c}"></lightning:formattedDateTime>
+                    </td>
+                    <td data-label="VIN">
+                        <lightning:formattedText value="{!car.CD_VIN__c}"></lightning:formattedText>
+                    </td>
+                    <td data-label="Actions">
+
+                        <lightning:buttonMenu iconName="utility:settings" alternativeText="Settings">
+                            <lightning:menuItem label="Edit" onactive="{!c.openEditCarModal}" value="{!car.Id}" />
+                            <lightning:menuItem label="Delete" onactive="{!c.deleteCar}" value="{!index}"/>
+                        </lightning:buttonMenu>
+
+                    </td>
+                </tr>
+            </aura:iteration>
+            </tbody>
+        </table>
+    </article>
+
+    <c:CD_Modal aura:id="createModal" title="Create New Car" >
+        <aura:set attribute="body">
+            <!--<fieldset class="slds-form&#45;&#45;compound">-->
+                <!--<div class="slds-form-element__group">-->
+                    <!--<div class="slds-form-element__row">-->
+                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
+                            <!--<lightning:input label="Name" aura:id="createCarForm" name="carName" value="{!v.newCar.Name}"></lightning:input>-->
+                        <!--</div>-->
+                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
+                            <!--<lightning:select label="Model" aura:id="createCarForm" name="carModel" value="{!v.newCar.CD_Model__c}"></lightning:select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="slds-form-element__row">-->
+                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
+                            <!--<lightning:input label="VIN" aura:id="createForm" name="carVIN" value="{!v.newCar.CD_VIN__c}"></lightning:input>-->
+                        <!--</div>-->
+                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
+                            <!--<lightning:input label="Year" aura:id="createCarForm" name="carYear" type="date" value="{!v.newCar.CD_Year__c}"></lightning:input>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</fieldset>-->
+            <lightning:recordEditForm aura:id="createCarForm" objectApiName="Product2" onsuccess="{!c.carCreationSuccessCallback}" onerror="{!c.carCreationErrorCallback}">
+                <lightning:messages />
+                <lightning:inputField fieldName="Name" />
+                <lightning:inputField fieldName="CD_Year__c" />
+                <lightning:inputField fieldName="CD_Model__c" />
+                <lightning:inputField fieldName="CD_VIN__c" />
+
+                <lightning:button class="slds-m-top_small" type="submit" label="Save" />
+            </lightning:recordEditForm>
+        </aura:set>
+        <aura:set attribute="footer">
+            <div class="slds-no-flex">
+                <lightning:button label="Save"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.createCar}"/>
+                <lightning:button label="Clear"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.clearCreateCarForm}"/>
+                <lightning:button label="Cancel"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.cancelCarCreation}"/>
+            </div>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_Modal aura:id="editCarModal" title="Edit Car" >
+        <aura:set attribute="body">
+            <lightning:recordEditForm aura:id="editCarForm" objectApiName="Product2" recordId="{!v.editedCarId}" onsuccess="{!c.carCreationSuccessCallback}" onerror="{!c.carCreationErrorCallback}">
+                <lightning:messages />
+                <lightning:inputField fieldName="Name" />
+                <lightning:inputField fieldName="CD_Year__c" />
+                <lightning:inputField fieldName="CD_Model__c" />
+                <lightning:inputField fieldName="CD_VIN__c" />
+
+                <lightning:button class="slds-m-top_small" type="submit" label="Save" />
+            </lightning:recordEditForm>
+        </aura:set>
+        <aura:set attribute="footer">
+            <div class="slds-no-flex">
+                <lightning:button label="Save"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.createCar}"/>
+                <lightning:button label="Clear"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.clearCreateCarForm}"/>
+                <lightning:button label="Cancel"
+                                  class="slds-m-top--medium"
+                                  variant="brand"
+                                  onclick="{!c.cancelCarCreation}"/>
+            </div>
+        </aura:set>
+    </c:CD_Modal>
+
+</aura:component>
