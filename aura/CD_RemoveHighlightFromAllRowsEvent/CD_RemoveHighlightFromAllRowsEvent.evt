@@ -1,0 +1,6 @@
+<!--
+ - Created by BRITENET on 10.05.2018.
+ -->
+
+<aura:event type="APPLICATION" description="CD_RemoveHighlightFromAllRowsEvent">
+</aura:event>

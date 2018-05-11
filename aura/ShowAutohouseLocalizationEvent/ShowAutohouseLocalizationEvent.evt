@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 26.04.2018.
+ -->
+
+<aura:event type="APPLICATION" description="ShowAutohouseLocalizationEvent">
+    <aura:attribute name="autohouse" Type="Account"/>
+</aura:event>

@@ -1,0 +1,14 @@
+<!--
+ - Created by BRITENET on 30.04.2018.
+ -->
+
+<aura:component description="CD_RegisterAsLead" implements="flexipage:availableForAllPageTypes" access="global">
+    <lightning:tabset >
+        <lightning:tab label="Item One">
+            Sample Content One
+        </lightning:tab>
+        <lightning:tab label="Item Two">
+            Sample Content Two
+        </lightning:tab>
+    </lightning:tabset>
+</aura:component>
