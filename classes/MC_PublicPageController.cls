@@ -4,11 +4,9 @@
 
 public with sharing class MC_PublicPageController {
     public List<MC_Mechanic__c> allMechanics {get; set;}
-    public Lead newLead {get; set;}
 
     public MC_PublicPageController(ApexPages.StandardController controller){
         allMechanics = getRandomMechanics(5);
-        newLead = new Lead();
     }
 
     public List<MC_Mechanic__c> getRandomMechanics(Integer numberOfRandomMechanics){
