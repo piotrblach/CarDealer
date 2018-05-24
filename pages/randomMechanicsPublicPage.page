@@ -102,7 +102,7 @@
                                 <div class="slds-media__figure">
                                       <span class="slds-icon_container slds-icon-standard-opportunity">
                                         <svg aria-hidden="true" class="slds-icon">
-                                          <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#case"></use>
+                                          <use xlink:href="apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#groups"></use>
                                         </svg>
                                       </span>
                                 </div>
