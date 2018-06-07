@@ -1,0 +1,4 @@
+
+<aura:event type="APPLICATION" description="CD_CarRemovedEvent">
+    <aura:attribute name="carId" type="String"></aura:attribute>
+</aura:event>

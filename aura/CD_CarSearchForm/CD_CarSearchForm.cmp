@@ -1,0 +1,45 @@
+
+<aura:component description="CD_CarSearchForm" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global" controller="CD_CarsManagerController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    <aura:registerEvent name="SearchCarsFormSubmitEvent" type="c:CD_SearchCarsFormSubmitEvent"></aura:registerEvent>
+    <aura:attribute name="searchedCar" type="Product2"
+                    default="{  'sobjectType': 'Product2',
+                                'Name': '',
+                                'CD_Model__c': '',
+                                'CD_VIN__c': '',
+                                'CD_Year__c': ''}"/>
+
+    <lightning:card title="Search cars" iconName="standard:lead_list" class="slds-tabs_card">
+        <fieldset class="slds-form--compound">
+            <div class="slds-form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <lightning:input label="Name" aura:id="searchCarForm" name="carName" value="{!v.searchedCar.Name}"></lightning:input>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <ui:inputSelect label="Model" class="dynamic" aura:id="carModelInputSelect" value="{!v.searchedCar.CD_Model__c}" required="true"/>
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <lightning:input label="VIN" aura:id="searchCarForm" name="carVIN" value="{!v.searchedCar.CD_VIN__c}"></lightning:input>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <lightning:input label="Year" aura:id="searchCarForm" name="carYear" value="{!v.searchedCar.CD_Year__c}"></lightning:input>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <aura:set attribute="footer">
+            <lightning:button label="Search"
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.searchCars}"/>
+            <lightning:button label="Clear"
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.clearForm}"/>
+        </aura:set>
+    </lightning:card>
+
+</aura:component>

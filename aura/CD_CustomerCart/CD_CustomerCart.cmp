@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 07.06.2018.
+ -->
+
+<aura:component description="CD_CustomerCart" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global">
+    <lightning:button variant="brand" label="Brand action" title="Brand action" onclick="{! c.handleClick }" />
+</aura:component>

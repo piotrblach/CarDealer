@@ -19,6 +19,7 @@
                     event.fire();
                 }), 500);
             }
+            component.find("loadingSpinner").hide();
         });
         $A.enqueueAction(action);
     }, 

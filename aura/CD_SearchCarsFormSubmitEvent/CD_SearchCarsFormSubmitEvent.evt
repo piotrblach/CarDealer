@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 24.05.2018.
+ -->
+
+<aura:event type="APPLICATION" description="CD_SearchCarsFormSubmitEvent">
+    <aura:attribute name="searchParams" type="Product2"></aura:attribute>
+</aura:event>

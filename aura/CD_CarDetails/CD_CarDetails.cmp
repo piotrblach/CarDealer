@@ -1,0 +1,20 @@
+
+<aura:component description="CD_CarDetails">
+    <aura:attribute name="carId" type="String"></aura:attribute>
+    <aura:attribute name="selectedTabId" type="String" default="addNewCarTab"></aura:attribute>
+    <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
+    <aura:handler event="c:CD_CarRemovedEvent" action="{!c.onCarRemoved}"></aura:handler>
+
+    <lightning:card title="Cars Details" iconName="standard:lead_list" class="slds-tabs_card">
+        <lightning:tabset selectedTabId="{!v.selectedTabId}">
+            <div class="{!v.carId != null ? 'slds-grid' : 'slds-hide'}">
+                <lightning:tab label="Car Details" id="carDetailTab" >
+                    <c:CD_CarDetail carId="{!v.carId}"></c:CD_CarDetail>
+                </lightning:tab>
+            </div>
+            <lightning:tab label="Add new car" id="addNewCarTab">
+                <c:CD_CreateNewCar></c:CD_CreateNewCar>
+            </lightning:tab>
+        </lightning:tabset>
+    </lightning:card>
+</aura:component>

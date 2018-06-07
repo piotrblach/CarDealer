@@ -17,10 +17,7 @@
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
                 <div class="slds-media__body">
                     <h2>
-                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
-                           title="[object Object]">
-                            <span class="slds-text-heading_small">Search Autohouses</span>
-                        </a>
+                        <span class="slds-text-heading_small">Search Autohouses</span>
                     </h2>
                 </div>
             </header>
@@ -29,26 +26,10 @@
             <fieldset class="slds-form--compound">
                 <div class="slds-form-element__group">
                     <div class="slds-form-element__row">
-                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
-                            <!--<label class="slds-form-element__label">First Name</label>-->
-                        <!--</div>-->
                         <div class="slds-form-element slds-size--1-of-2">
                             <lightning:input label="Name" aura:id="searchAutohouseForm" name="aoutohouseName" value="{!v.searchedAutohouse.Name}"></lightning:input>
                         </div>
                     </div>
-                    <!--<div class="slds-form-element__row">-->
-                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
-                            <!--<label class="slds-form-element__label">City</label>-->
-                        <!--</div>-->
-                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
-                            <!--<label class="slds-form-element__label">Country</label>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="slds-form-element__row">-->
-                        <!--<div class="slds-form-element slds-size&#45;&#45;1-of-2">-->
-                            <!--<label class="slds-form-element__label">Email</label>-->
-                        <!--</div>-->
-                    <!--</div>-->
                 </div>
             </fieldset>
         </div>
@@ -66,6 +47,7 @@
         </footer>
 
         <c:MC_AutohousesList autohouses="{!v.foundAutohouses}"></c:MC_AutohousesList>
-        <!--<c:CD_AutohousesMap ></c:CD_AutohousesMap>-->
+        <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
     </article>
 </aura:component>

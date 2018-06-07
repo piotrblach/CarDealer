@@ -1,5 +1,6 @@
 ({
     searchAutohouses: function(component, event, helper) {
+        component.find("loadingSpinner").show();
         var searchedAutohouse = component.get("v.searchedAutohouse");
         helper.getAutohouses(component, searchedAutohouse);
         helper.showAutohouseDetails(component, '');

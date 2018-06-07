@@ -1,0 +1,60 @@
+
+<aura:component description="CD_CarTile">
+    <aura:attribute name="car" type="Product2"></aura:attribute>
+    <aura:attribute name="carToDisplay" type="Product2"></aura:attribute>
+    <aura:attribute name="carId" type="String"></aura:attribute>
+    <aura:attribute name="showCarTile" type="Boolean" default="true"></aura:attribute>
+    <aura:attribute name="selected" type="Boolean" default="false" />
+    <aura:attribute name="recordError" type="String"></aura:attribute>
+    <aura:attribute name="environmentType" type="String" description="This variable is used to indicate which environment this component is displayed on, f.i. community vs standard lightning" />
+    <aura:registerEvent name="CarClicked" type="c:CD_CarClicked"/>
+    <aura:registerEvent name="CarRemovedEvent" type="c:CD_CarRemovedEvent"></aura:registerEvent>
+    <aura:handler event="c:CD_CarUpdated" action="{!c.onCarUpdated}"></aura:handler>
+
+    <force:recordData aura:id="recordRemover"
+                      recordId="{!v.carId}"
+                      fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_LogoImageId__c, CD_ContentDocumentVersion__c"
+                      targetError="{!v.recordError}"
+                      targetFields="{!v.carToDisplay}"
+                      targetRecord="{!v.car}"
+    />
+
+    <aura:if isTrue="{!v.showCarTile}">
+        <lightning:button class="{! v.selected == true ? 'tile selected' : 'tile' }">
+            <div style="{!v.carToDisplay.CD_LogoImageId__c != null ?
+                    'background-image:url(\'/sfc/servlet.shepherd/document/download/'+v.carToDisplay.CD_LogoImageId__c+'\')' :
+                    v.environmentType == 'Community' ?
+                            'background-image:url(\'CarDealerCustomers/resource/carImageNotFound\')' :
+                            'background-image:url(\'/resource/carImageNotFound\')'}"
+                 class="innertile" onclick="{!c.onCarClicked}"></div>
+
+            <div class="under-third">
+                <h1 class="slds-truncate">
+                    <div class="slds-grid slds-grid--align-spread">
+                        <p class="slds-col slds-size--10-of-12 slds-truncate">
+                                {!v.carToDisplay.Name}
+                        </p>
+                        <p class="slds-col slds-size--2-of-12">
+                            <aura:if isTrue="{!v.environmentType != 'Community'}">
+                                <lightning:buttonIcon iconName="utility:delete" variant="border-filled" alternativeText="Delete" iconClass="dark" onclick="{!c.showRemovalConfirmation}"/>
+                            </aura:if>
+                            <aura:if isTrue="{!v.environmentType == 'Community'}">
+                                <lightning:buttonIcon iconName="utility:shopping_bag" variant="border-filled" alternativeText="Delete" iconClass="dark" onclick="{!c.addTOCart}"/>
+                            </aura:if>
+                        </p>
+                    </div>
+                </h1>
+            </div>
+
+        </lightning:button>
+    </aura:if>
+
+    <c:CD_Modal aura:id="removalConfirmationModal" hasCloseButton="true" title="Removal confirmation">
+        Do you really want to remove this record?
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideRemovalConfirmation}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.onDeleteCar}">Delete</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+</aura:component>

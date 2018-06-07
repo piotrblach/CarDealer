@@ -1,0 +1,54 @@
+
+<aura:component description="CD_CarImages" controller="CD_CarsManagerController">
+    <aura:attribute name="carId" type="String"></aura:attribute>
+    <aura:attribute name="images" type="ContentDocumentLink[]"></aura:attribute>
+    <aura:attribute name="car" type="Product2"></aura:attribute>
+    <aura:attribute name="carToDisplay" type="Product2"></aura:attribute>
+    <aura:attribute name="recordError" type="String"></aura:attribute>
+    <aura:attribute name="visible" type="Boolean"></aura:attribute>
+    <aura:registerEvent name="CarUpdated" type="c:CD_CarUpdated"></aura:registerEvent>
+    <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
+    <aura:handler name="init" value="{!this}" action="{!c.onCarIdChanged}"></aura:handler>
+
+    <div class="slds-form-element__row slds-grid_align-center">
+        <lightning:fileUpload label="Add images"
+                              multiple="true"
+                              accept=".jpg, .png"
+                              recordId="{!v.carId}"
+                              onuploadfinished="{!c.handleAfterUpload}"
+        />
+    </div>
+
+    <force:recordData aura:id="recordImages"
+                      recordId="{!v.carId}"
+                      mode="EDIT"
+                      fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_LogoImageId__c, CD_ContentDocumentVersion__c"
+                      targetError="{!v.recordError}"
+                      targetFields="{!v.carToDisplay}"
+                      targetRecord="{!v.car}"
+                      recordUpdated="{!c.xxx}"
+    />
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.images.length > 0}">
+            <aura:iteration items="{!v.images}" var="image">
+                <lightning:layoutItem flexibility="grow" class="slds-m-around_large slds-align-middle">
+                    <lightning:fileCard fileId="{!image.ContentDocumentId}"></lightning:fileCard>
+                    <aura:if isTrue="{!image.ContentDocumentId != v.carToDisplay.CD_LogoImageId__c}">
+                        <lightning:button onclick="{!c.setAsPrimaryCarImage}" value="{!image.ContentDocumentId}">Set as primary</lightning:button>
+                        <lightning:button onclick="{!c.deleteImage}" value="{!image.ContentDocumentId}">Delete</lightning:button>
+                    </aura:if>
+                </lightning:layoutItem>
+            </aura:iteration>
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="No images found" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+
+    </lightning:layout>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>

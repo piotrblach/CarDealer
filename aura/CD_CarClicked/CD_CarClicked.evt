@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 25.05.2018.
+ -->
+
+<aura:event type="COMPONENT" description="CD_CarClicked">
+    <aura:attribute name="carId" type="String"></aura:attribute>
+</aura:event>

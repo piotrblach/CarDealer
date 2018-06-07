@@ -10,15 +10,10 @@ public with sharing class CD_AutohousesController {
     }
 
     private static String generateQueryStringForSearchedAutohouse(Account searchedAutohouse){
-        String queryString;
-        String conditionsSection = '';
-        queryString = 'SELECT Id, Name, Location__Latitude__s, Location__Longitude__s FROM Account ';
+        String queryString = 'SELECT Id, Name, Location__Latitude__s, Location__Longitude__s FROM Account ';
         queryString+=  (String.isBlank(searchedAutohouse.Name)) ? '' : 'WHERE ';
-
-        conditionsSection+= String.isBlank(searchedAutohouse.Name) ? '' : 'Name LIKE \'%' + searchedAutohouse.Name + '%\'';
-
-        queryString+= conditionsSection == null ? '' : conditionsSection;
-        system.debug(queryString);
+        String conditionsSection = String.isBlank(searchedAutohouse.Name) ? '' : 'Name LIKE \'%' + searchedAutohouse.Name + '%\'';
+        queryString += conditionsSection;
         return queryString;
     }
 }

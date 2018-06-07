@@ -1,0 +1,79 @@
+
+<aura:component description="CD_CarDetail" controller="CD_CarsManagerController">
+    <aura:attribute name="car" type="Product2"></aura:attribute>
+    <aura:attribute name="carToDisplay" type="Product2"></aura:attribute>
+    <aura:attribute name="editorVisible" type="Boolean" default="false"></aura:attribute>
+    <aura:attribute name="carId" type="String"></aura:attribute>
+    <aura:attribute name="recordError" type="String"></aura:attribute>
+
+    <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
+    <aura:handler name="init" value="{!this}" action="{!c.onCarIdChanged}"></aura:handler>
+    <aura:handler name="change" value="{!v.editorVisible}" action="{!c.onEditorVisibleChange}"></aura:handler>
+
+    <force:recordData aura:id="carDetail"
+                      recordId="{!v.carId}"
+                      mode="EDIT"
+                      fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_ContentDocumentVersion__c"
+                      targetError="{!v.recordError}"
+                      recordUpdated="{!c.xxx}"
+                      targetFields="{!v.carToDisplay}"
+                      targetRecord="{!v.car}"
+    />
+
+    <aura:if isTrue="{!v.editorVisible}">
+        <c:CD_EditCar carId="{!v.carId}" visible="{!v.editorVisible}"></c:CD_EditCar>
+    </aura:if>
+
+    <aura:if isTrue="{!!v.editorVisible}">
+        <div class="slds-grid slds-grid--align-left">
+            <p class="slds-col slds-size--4-of-12 slds-p-around_small">
+                <img src="{!v.carToDisplay.CD_ContentDocumentVersion__c != null ? '/sfc/servlet.shepherd/version/download/'+v.carToDisplay.CD_ContentDocumentVersion__c : 'http://www.burtonkia.co.uk/images/car-not-found.jpg'}"/>
+            </p>
+            <p class="slds-col slds-size--4-of-12 slds-p-around_small">
+                <lightning:tile label="{!v.movieDetails.title}">
+                    <dl class="slds-dl_horizontal">
+                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Name">Name</p>
+                        </dt>
+                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Name">{!v.carToDisplay.Name}</p>
+                        </dd>
+                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Model">Model</p>
+                        </dt>
+                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Model">{!v.carToDisplay.CD_Model__c}</p>
+                        </dd>
+                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="VIN">VIN</p>
+                        </dt>
+                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="VIN">{!v.carToDisplay.CD_VIN__c}</p>
+                        </dd>
+                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Year">Year</p>
+                        </dt>
+                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                            <p class="slds-truncate" title="Year">{!v.carToDisplay.CD_Year__c}</p>
+                        </dd>
+                    </dl>
+                </lightning:tile>
+            </p>
+            <p class="slds-col slds-size--4-of-12 slds-p-around_small">
+                <lightning:button onclick="{!c.setEditMode}">Update</lightning:button>
+                <lightning:button variant="destructive" onclick="{!c.showRemovalConfirmation}">Delete</lightning:button>
+            </p>
+        </div>
+    </aura:if>
+
+    <c:CD_CarImages carId="{!v.carId}" visible="{!v.editorVisible}"></c:CD_CarImages>
+
+    <c:CD_Modal aura:id="removalConfirmationModal" hasCloseButton="true" title="Removal confirmation">
+        Do you really want to remove this record?
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideRemovalConfirmation}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.deleteCar}">Delete</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+</aura:component>

@@ -1,6 +1,5 @@
 ({
     jsLoaded: function(component, event, helper) {
-        console.log('mapa')
         var map = L.map('map', {zoomControl: false, tap: false, markerZoomAnimation: false})
                   .setView([37.784173, -122.401557], 14);
         L.tileLayer(
@@ -9,7 +8,6 @@
               attribution: 'Tiles © Esri'
         }).addTo(map);
         component.set("v.map", map);
-        console.log('mapa')
     },
     autohousesLoaded: function(component, event, helper) {
         map = component.get('v.map');

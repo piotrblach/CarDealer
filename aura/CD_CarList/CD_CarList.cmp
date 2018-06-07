@@ -1,0 +1,31 @@
+
+<aura:component description="CD_CarList" controller="CD_CarsManagerController" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="cars" type="Product2[]"/>
+    <aura:attribute name="selectedCarId" type="String"></aura:attribute>
+    <aura:attribute name="environmentType" type="String" default="Standard" description="This variable is used to indicate which environment this component is displayed on, f.i. community vs standard lightning" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    <aura:handler event="c:CD_SearchCarsFormSubmitEvent" action="{!c.onSearchCarsFormSubmit}"></aura:handler>
+    <aura:handler event="c:CD_CarRemovedEvent" action="{!c.onCarRemoved}"></aura:handler>
+
+    <lightning:card title="Cars List" iconName="standard:lead_list" class="slds-tabs_card">
+        <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+
+            <aura:if isTrue="{!v.cars.length > 0}">
+                <aura:iteration items="{!v.cars}" var="car">
+                    <lightning:layoutItem flexibility="grow" class="slds-m-around_large slds-align-middle">
+                        <c:CD_CarTile selected="{!v.selectedCarId}" carId="{!car.Id}" environmentType="{!v.environmentType}"/>
+                    </lightning:layoutItem>
+                </aura:iteration>
+                <aura:set attribute="else">
+                    <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                        <ui:outputText value="No cars found" />
+                    </lightning:layoutItem>
+                </aura:set>
+            </aura:if>
+
+        </lightning:layout>
+    </lightning:card>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>

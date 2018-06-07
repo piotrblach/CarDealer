@@ -1,0 +1,20 @@
+
+<aura:component description="CD_CarManagerMain" implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:handler name="CarClicked" event="c:CD_CarClicked" action="{!c.onCarClicked}"></aura:handler>
+    <aura:attribute name="selectedCarId" type="String"></aura:attribute>
+
+    <c:CD_CarSearchForm aura:id="carSearchForm"></c:CD_CarSearchForm>
+
+    <lightning:layout class="slds-p-top--small">
+
+        <lightning:layoutItem size="6" class="slds-p-right--x-small">
+            <c:CD_CarList aura:id="carList"></c:CD_CarList>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem size="6" class="slds-p-left--x-small">
+            <c:CD_CarDetails aura:id="carDetails" carId="{!v.selectedCarId}"></c:CD_CarDetails>
+        </lightning:layoutItem>
+
+    </lightning:layout>
+
+</aura:component>

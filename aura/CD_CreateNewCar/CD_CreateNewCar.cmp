@@ -1,0 +1,94 @@
+
+<aura:component description="CD_CreateNewCar" controller="CD_CarsManagerController" implements="flexipage:availableForRecordHome, force:hasRecordId">
+    <aura:attribute name="car" type="Product2"></aura:attribute>
+    <aura:attribute name="step" type="String" default="details"></aura:attribute>
+    <aura:attribute name="newCar" type="Product2"
+        default="{
+            'sobjectType': 'Product2',
+            'Name': '',
+            'CD_Model__c': '',
+            'CD_VIN__c': '',
+            'CD_Year__c': '',
+            'CD_IsSavingCompleted__c': false
+        }"
+    />
+    <aura:attribute name="carId" type="String"></aura:attribute>
+    <aura:attribute name="carToDelete" type="Product2"></aura:attribute>
+    <aura:attribute name="carToDeleteFields" type="Product2"></aura:attribute>
+    <aura:attribute name="deleteRecordError" type="String" />
+    <aura:attribute name="isRecordLoaded" type="Boolean" default="false"></aura:attribute>
+    <aura:attribute name="recordError" type="String" />
+    <aura:registerEvent name="CarRemovedEvent" type="c:CD_CarRemovedEvent"></aura:registerEvent>
+    <aura:registerEvent name="CarClicked" type="c:CD_CarClicked"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+
+    <force:recordData aura:id="carCreator"
+                      fields="Id, Name, CD_Model__c, CD_VIN__c, CD_Year__c, CD_IsSavingCompleted__c"
+                      targetError="{!v.recordError}"
+                      targetRecord="{!v.car}"
+                      targetFields ="{!v.newCar}"/>
+
+    <aura:if isTrue="{!v.carId}">
+        <force:recordData aura:id="recordRemover"
+                          mode="EDIT"
+                          recordId="{!v.carId}"
+                          fields="Id, Name, CD_Model__c, CD_VIN__c, CD_Year__c, CD_IsSavingCompleted__c"
+                          targetError="{!v.deleteRecordError}"
+                          targetRecord="{!v.carToDelete}"
+                          targetFields ="{!v.carToDeleteFields}"/>
+    </aura:if>
+
+    <div class="{!v.step == 'details' ? 'slds' : 'slds-hide'}">
+        <lightning:card iconName="action:new" title="Add Car - Step 1/2 - Fill Details">
+            <div class="slds-p-horizontal--small">
+
+                <fieldset class="slds-form--compound">
+                    <div class="slds-form-element__group">
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <lightning:input aura:id="newCarFormField" label="Name" required="true" value="{!v.newCar.Name}"/>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <ui:inputDate aura:id="newCarFormField" label="Production date" required="true" value="{!v.newCar.CD_Year__c}" displayDatePicker="true"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <lightning:input aura:id="newCarFormField" label="VIN" required="true" value="{!v.newCar.CD_VIN__c}"/>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <ui:inputSelect label="Model" value="{!v.newCar.CD_Model__c}" required="true" aura:id="addCarModelInputSelect"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row slds-grid_align-center">
+                            <lightning:button label="Add Car" variant="brand" onclick="{!c.handleCreateRecord}" />
+                        </div>
+                    </div>
+                    <aura:if isTrue="{!not(empty(v.recordError))}">
+                        <div class="recordError">
+                                {!v.recordError}
+                        </div>
+                    </aura:if>
+                </fieldset>
+
+            </div>
+        </lightning:card>
+    </div>
+
+    <div class="{!v.step == 'images' ? 'slds' : 'slds-hide'}">
+        <lightning:card iconName="action:new" title="Add Car - Step 2/2 - Add Images">
+            <div class="slds-form-element__row slds-grid_align-center">
+                <lightning:fileUpload label="Add images"
+                                      multiple="true"
+                                      accept=".jpg, .png"
+                                      recordId="{!v.carId}"
+                                      onuploadfinished="{!c.handleUploadFinished }"
+                />
+            </div>
+            <lightning:button label="Cancel" variant="brand" onclick="{!c.cancelCarCreation}" />
+        </lightning:card>
+    </div>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>

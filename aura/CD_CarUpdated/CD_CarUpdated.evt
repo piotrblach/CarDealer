@@ -1,0 +1,4 @@
+
+<aura:event type="APPLICATION" description="CD_CarUpdated">
+    <aura:attribute name="carId" type="String"></aura:attribute>
+</aura:event>
