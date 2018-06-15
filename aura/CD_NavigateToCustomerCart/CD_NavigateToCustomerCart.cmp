@@ -1,0 +1,12 @@
+
+<aura:component description="CD_NavigateToCustomerCart" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global">
+    <div class="slds-p-around--x-small slds-color__background_gray-1">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="11">
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1">
+                <lightning:button iconName="utility:shopping_bag" variant="brand" label="My cart" title="My cart" onclick="{! c.goToCart }" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>
