@@ -2,7 +2,7 @@
  - Created by BRITENET on 10.05.2018.
  -->
 
-<aura:component description="CD_Modal">
+<aura:component description="CD_Modal" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global">
     <aura:attribute name="title" type="String"/>
     <aura:attribute name="size" type="String"/>
     <aura:attribute name="footer" type="Aura.Component[]"/>
@@ -15,7 +15,7 @@
 
     <aura:if isTrue="{!v.visible}">
         <section role="dialog"  tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1"
-                 class="{!v.size == 'large' ? 'slds-modal slds-modal-backdrop slds-modal_large slds-slide-down-cancel' : 'slds-modal slds-modal-backdrop slds-slide-down-cancel'}">
+                 class="{!v.size == 'large' ? 'slds-modal slds-backdrop slds-modal_large slds-slide-down-cancel' : 'slds-modal slds-backdrop slds-slide-down-cancel'}">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
                     <aura:if isTrue="{!v.hasCloseButton}">

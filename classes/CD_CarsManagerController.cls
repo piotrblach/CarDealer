@@ -1,4 +1,3 @@
-
 public with sharing class CD_CarsManagerController {
     @AuraEnabled
     public static String setImageAsPrimaryCarImage(String imageId, String carId){
@@ -10,6 +9,10 @@ public with sharing class CD_CarsManagerController {
             update car;
             return 'Success';
         }catch (DmlException e){
+            for (Integer i = 0; i < e.getNumDml(); i++) {
+                // Process exception here
+                System.debug(e.getDmlMessage(i));
+            }
             return 'Error';
         }
     }
@@ -17,11 +20,14 @@ public with sharing class CD_CarsManagerController {
     @AuraEnabled
     public static String removeCarImage(String imageId){
         ContentDocument image = [SELECT Id FROM ContentDocument WHERE Id =: imageId];
-
         try {
             delete image;
             return 'Success';
         }catch (DmlException e){
+            for (Integer i = 0; i < e.getNumDml(); i++) {
+                // Process exception here
+                System.debug(e.getDmlMessage(i));
+            }
             return 'Error';
         }
     }
@@ -47,8 +53,146 @@ public with sharing class CD_CarsManagerController {
         for (Schema.PicklistEntry pleItem: ple) {
             options.add(pleItem.getLabel());
         }
-
         return options;
+    }
+
+    @AuraEnabled
+    public static String addCarToUserCart(Product2 car){
+        List<CD_Wrappers.CD_CartItem> cartItems;
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            cartItems = (List<CD_Wrappers.CD_CartItem>)Cache.Session.get('local.Cart.cartItems');
+            if(cartItems != null){
+                for(Integer ii = 0; ii < cartItems.size(); ii++){
+                    if(cartItems[ii].car.Id == car.Id){
+                        throw new AuraHandledException(Label.CD_Item_already_in_cart);
+                    }
+                }
+            }
+        }else{
+            cartItems = new List<CD_Wrappers.CD_CartItem>();
+        }
+        cartItems.add(new CD_Wrappers.CD_CartItem(car, null));
+        Cache.Session.put('local.Cart.cartItems', cartItems);
+        return 'Success';
+    }
+
+    @AuraEnabled
+    public static List<CD_Wrappers.CD_CartItem> getCustomerCartItems(){
+        List<CD_Wrappers.CD_CartItem> cartItems;
+
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            cartItems = (List<CD_Wrappers.CD_CartItem>)Cache.Session.get('local.Cart.cartItems');
+        }else{
+            cartItems = new List<CD_Wrappers.CD_CartItem>();
+        }
+        return cartItems;
+    }
+
+    @AuraEnabled
+    public static String proceedToCheckout(){
+        List<CD_Wrappers.CD_CartItem> cartItems;
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            cartItems = (List<CD_Wrappers.CD_CartItem>)Cache.Session.get('local.Cart.cartItems');
+        }
+
+        List<Event> productMeetings = new List<Event>();
+        if(cartItems != null){
+            for(Integer ii = 0; ii < cartItems.size(); ii++){
+                Event productMeeting = new Event();
+                productMeeting.StartDateTime = cartItems[ii].meetingDate;
+                productMeeting.EndDateTime = cartItems[ii].meetingDate.addHours(1);
+                productMeeting.WhatId = cartItems[ii].car.Id;
+                productMeeting.Subject = Label.CD_New_product_meeting;
+                productMeeting.OwnerId = UserInfo.getUserId();
+                productMeetings.add(productMeeting);
+            }
+        }else{
+            throw new AuraHandledException(Label.CD_Customer_cart_is_empty);
+        }
+
+        try{
+            insert productMeetings;
+            deleteAllCustomerCartItems();
+        }catch (DmlException e){
+            throw new AuraHandledException(Label.CD_Error_creating_product_meetings);
+        }
+        return String.valueOf(cartItems.size());
+    }
+
+    private static void deleteAllCustomerCartItems(){
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            Cache.Session.remove('local.Cart.cartItems');
+        }
+    }
+
+    @AuraEnabled
+    public static List<CD_Wrappers.CD_ProductMeeting> loadCustomerPurchases(){
+        List<Event> productMeetingEvents = [
+                SELECT Id, OwnerId, WhatId, CreatedById, StartDateTime
+                FROM Event
+                WHERE CreatedById =: UserInfo.getUserId()
+        ];
+        Set<Id> carIds = new Set<Id>();
+        for(Event event : productMeetingEvents){
+            carIds.add(event.WhatId);
+        }
+        Map<Id, Product2> productMeetingCarsMap = new Map<Id, Product2>([
+                SELECT Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c
+                FROM Product2
+                WHERE Id IN : carIds
+        ]);
+
+        List<CD_Wrappers.CD_ProductMeeting> productMeetings = new List<CD_Wrappers.CD_ProductMeeting>();
+        for(Event event : productMeetingEvents){
+            productMeetings.add(new CD_Wrappers.CD_ProductMeeting(event, productMeetingCarsMap.get(event.WhatId)));
+        }
+        return productMeetings.size() > 0 ? productMeetings : new List<CD_Wrappers.CD_ProductMeeting>();
+    }
+
+    @AuraEnabled
+    public static String deleteCustomerCartItem(String[] carIdsToRemove){
+        List<CD_Wrappers.CD_CartItem> cartItems;
+
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            cartItems = (List<CD_Wrappers.CD_CartItem>)Cache.Session.get('local.Cart.cartItems');
+        }else{
+            cartItems = new List<CD_Wrappers.CD_CartItem>();
+        }
+
+        if(cartItems != null){
+            for(Integer ii = 0; ii < cartItems.size(); ii++){
+                for(Integer jj = 0; jj < carIdsToRemove.size(); jj++){
+                    if(cartItems[ii].car.Id == carIdsToRemove[jj]){
+                        cartItems.remove(ii);
+                    }
+                }
+            }
+        }
+
+        Cache.Session.put('local.Cart.cartItems', cartItems);
+        return String.valueOf(cartItems.size());
+    }
+
+    @AuraEnabled
+    public static String setCartItemMeetingDate(String[] carIdsToSetMeeting, String meetingDate){
+        List<CD_Wrappers.CD_CartItem> cartItems;
+
+        if (Cache.Session.contains('local.Cart.cartItems')) {
+            cartItems = (List<CD_Wrappers.CD_CartItem>)Cache.Session.get('local.Cart.cartItems');
+        }else{
+            cartItems = new List<CD_Wrappers.CD_CartItem>();
+        }
+        if(cartItems != null){
+            for(Integer ii = 0; ii < cartItems.size(); ii++){
+                for(Integer jj = 0; jj < carIdsToSetMeeting.size(); jj++){
+                    if(cartItems[ii].car.Id == carIdsToSetMeeting[jj]){
+                        cartItems[ii].meetingDate = Datetime.valueOf(meetingDate.substringBeforeLast('.').replace('T',' '));
+                    }
+                }
+            }
+        }
+        Cache.Session.put('local.Cart.cartItems', cartItems);
+        return String.valueOf(cartItems.size());
     }
 
     @AuraEnabled
