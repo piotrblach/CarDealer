@@ -1,0 +1,98 @@
+
+<aura:component description="CD_MeetingsToAssign" controller="CD_MeetingManagerController">
+    <aura:attribute name="meetingsToAssign" type="Object[]"/>
+    <aura:attribute name="selectedMeetingsIds" type="String[]"/>
+    <aura:attribute name="assignMeetingModalVisible" type="Boolean" default="true"/>
+    <aura:attribute name="availableSalesReps" type="User[]"/>
+    <aura:attribute name="selectedSalesRepId" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.meetingsToAssign.length > 0}">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Select">Select</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Product Name">Product Name</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Model">Model</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Year">Year</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="VIN">VIN</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Meeting Date">Meeting Date</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <aura:iteration items="{!v.meetingsToAssign}" var="meetingToAssign" indexVar="index">
+                    <tr>
+                        <td data-label="Select">
+                            <!--<ui:inputCheckbox value="{!meetingToAssign.selected}" click="{!c.toggleSelected}"></ui:inputCheckbox>-->
+                            <lightning:input type="checkbox-button" onchange="{!c.toggleSelected}" value="{!meetingToAssign.productMeeting.Id}"></lightning:input>
+                        </td>
+                        <td data-label="Product Name">
+                            <lightning:formattedText value="{!meetingToAssign.car.Name}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Model">
+                            <lightning:formattedText value="{!meetingToAssign.car.CD_Model__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Year">
+                            <lightning:formattedDateTime value="{!meetingToAssign.car.CD_Year__c}"></lightning:formattedDateTime>
+                        </td>
+                        <td data-label="VIN">
+                            <lightning:formattedText value="{!meetingToAssign.car.CD_VIN__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Meeting Date">
+                            <lightning:formattedDateTime day="2-digit" month="short" year="numeric"  hour="2-digit" minute="2-digit" value="{!meetingToAssign.productMeeting.StartDateTime}"></lightning:formattedDateTime>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                </tbody>
+            </table>
+
+            <lightning:button disabled="{!v.selectedMeetingsIds.length == 0}"  onclick="{!c.openAssignMeetingModal}">Assign Selected</lightning:button>
+
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="You don't have any purchased items" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+    </lightning:layout>
+
+    <c:CD_Modal aura:id="assignMeetingModal" hasCloseButton="true" title="Assign selected meetings to sales representative">
+        <aura:if isTrue="{!v.assignMeetingModalVisible}">
+            <div class="slds-p-horizontal--small">
+                <fieldset class="slds-form--compound">
+                    <div class="slds-form-element__group">
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-1">
+                                <lightning:select name="selectSalesRep" label="Sales representative" value="{!v.selectedSalesRepId}">
+                                    <aura:iteration items="{!v.availableSalesReps}" var="availableSalesRep">
+                                        <option label="{!availableSalesRep.Name}" value="{!availableSalesRep.Id}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </aura:if>
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.closeAssignMeetingModal}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.assignMeetings}">Save</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>
