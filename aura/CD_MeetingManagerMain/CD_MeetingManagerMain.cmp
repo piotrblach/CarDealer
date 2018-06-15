@@ -1,0 +1,16 @@
+
+<aura:component description="CD_MeetingManagerMain" implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="selectedTabId" type="String" default="waitingToAssignTab"/>
+
+    <lightning:card title="Meetings" iconName="standard:lead_list" class="slds-tabs_card">
+        <lightning:tabset selectedTabId="{!v.selectedTabId}">
+            <lightning:tab label="Waiting to assign" id="waitingToAssignTab" >
+                <c:CD_MeetingsToAssign/>
+            </lightning:tab>
+            <lightning:tab label="Assigned to subordinaries" id="assignedTab">
+                <c:CD_MeetingsOfSubordinaries/>
+            </lightning:tab>
+        </lightning:tabset>
+    </lightning:card>
+
+</aura:component>
