@@ -9,7 +9,6 @@
 
     <lightning:card title="Cars List" iconName="standard:lead_list" class="slds-tabs_card">
         <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
-
             <aura:if isTrue="{!v.cars.length > 0}">
                 <aura:iteration items="{!v.cars}" var="car">
                     <lightning:layoutItem flexibility="grow" class="slds-m-around_large slds-align-middle">

@@ -1,5 +1,5 @@
 
-<aura:component description="CD_CarTile">
+<aura:component description="CD_CarTile" controller="CD_CarsManagerController">
     <aura:attribute name="car" type="Product2"></aura:attribute>
     <aura:attribute name="carToDisplay" type="Product2"></aura:attribute>
     <aura:attribute name="carId" type="String"></aura:attribute>
@@ -22,9 +22,9 @@
     <aura:if isTrue="{!v.showCarTile}">
         <lightning:button class="{! v.selected == true ? 'tile selected' : 'tile' }">
             <div style="{!v.carToDisplay.CD_LogoImageId__c != null ?
-                    'background-image:url(\'/sfc/servlet.shepherd/document/download/'+v.carToDisplay.CD_LogoImageId__c+'\')' :
+                    'background-image:url(\'https://piotrblach1-dev-ed.lightning.force.com/sfc/servlet.shepherd/document/download/'+v.carToDisplay.CD_LogoImageId__c+'\')' :
                     v.environmentType == 'Community' ?
-                            'background-image:url(\'CarDealerCustomers/resource/carImageNotFound\')' :
+                            'background-image:url(\'/CarDealerCustomers/resource/carImageNotFound\')' :
                             'background-image:url(\'/resource/carImageNotFound\')'}"
                  class="innertile" onclick="{!c.onCarClicked}"></div>
 
@@ -39,7 +39,7 @@
                                 <lightning:buttonIcon iconName="utility:delete" variant="border-filled" alternativeText="Delete" iconClass="dark" onclick="{!c.showRemovalConfirmation}"/>
                             </aura:if>
                             <aura:if isTrue="{!v.environmentType == 'Community'}">
-                                <lightning:buttonIcon iconName="utility:shopping_bag" variant="border-filled" alternativeText="Delete" iconClass="dark" onclick="{!c.addTOCart}"/>
+                                <lightning:buttonIcon iconName="utility:shopping_bag" variant="border-filled" alternativeText="Add to cart" iconClass="dark" onclick="{!c.addToCart}"/>
                             </aura:if>
                         </p>
                     </div>

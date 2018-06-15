@@ -1,12 +1,21 @@
 
 ({
     onCarClicked: function(component, event, helper){
-        let carClickedEvent = component.getEvent("CarClicked");
-        let selectedCarId = component.get('v.carId');
-        carClickedEvent.setParams({
-            "carId": selectedCarId
-        });
-        carClickedEvent.fire();
+        let envType = component.get("v.environmentType");
+        if(envType === 'Community'){
+            let urlEvent = $A.get("e.force:navigateToURL");
+            urlEvent.setParams({
+              "url": "/car-details/"+'?id='+component.get("v.carId")
+            });
+            urlEvent.fire();
+        }else{
+            let carClickedEvent = component.getEvent("CarClicked");
+            let selectedCarId = component.get('v.carId');
+            carClickedEvent.setParams({
+                "carId": selectedCarId
+            });
+            carClickedEvent.fire();
+        }
     },
     onDeleteCar: function(component, event, helper){
         component.find("recordRemover").deleteRecord($A.getCallback(function(deleteResult) {
@@ -66,12 +75,8 @@
             component.set("v.showCarTile", true);
         }
     },
-    addToCart: function(component, event){
-        DateTime dt = DateTime.parse('06/16/2015 11:46 AM');
-        Cache.Session.put('ns1.partition1.orderDate', dt);
-        if (Cache.Session.contains('ns1.partition1.orderDate')) {
-            DateTime cachedDt = (DateTime)Cache.Session.get('ns1.partition1.orderDate');
-            console.log(cachedDt)
-        }
+    addToCart: function(component, event, helper){
+        let car = component.get("v.carToDisplay");
+        helper.addToCart(component, car);
     }
 })
