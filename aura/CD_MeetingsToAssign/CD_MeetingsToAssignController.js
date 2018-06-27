@@ -21,8 +21,6 @@
         console.log(selectedMeetingsIds)
     },
     openAssignMeetingModal: function(component, event, helper){
-//        component.set("v.assignMeetingModalVisible", false);
-//        component.set("v.assignMeetingModalVisible", true);
         helper.loadAvailableSalesReps(component);
         component.find("assignMeetingModal").show();
     },

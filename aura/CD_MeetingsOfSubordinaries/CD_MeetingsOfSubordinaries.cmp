@@ -24,6 +24,9 @@
                         <div class="slds-truncate" title="VIN">VIN</div>
                     </th>
                     <th scope="col">
+                        <div class="slds-truncate" title="Price">Price</div>
+                    </th>
+                    <th scope="col">
                         <div class="slds-truncate" title="Meeting Date">Meeting Date</div>
                     </th>
                     <th scope="col">
@@ -48,6 +51,9 @@
                         </td>
                         <td data-label="VIN">
                             <lightning:formattedText value="{!assignedMeeting.car.CD_VIN__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Price">
+                            <lightning:formattedNumber value="{!assignedMeeting.carLowestPrice.UnitPrice}"></lightning:formattedNumber>
                         </td>
                         <td data-label="Meeting Date">
                             <lightning:formattedDateTime day="2-digit" month="short" year="numeric"  hour="2-digit" minute="2-digit" value="{!assignedMeeting.productMeeting.StartDateTime}"></lightning:formattedDateTime>

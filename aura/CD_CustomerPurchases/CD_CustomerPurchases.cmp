@@ -1,60 +1,76 @@
 
-<aura:component description="CD_CustomerPurchases" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global" controller="CD_CarsManagerController">
+<aura:component description="CD_CustomerPurchases" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global" controller="CD_CustomerPurchases">
     <aura:attribute name="customerPurchases" type="Object[]"/>
     <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:attribute name="selectedTabId" type="String" default="inProgressTab"/>
 
     <lightning:card title="Customer purchases" iconName="standard:lead_list" class="slds-tabs_card">
         <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
-            <aura:if isTrue="{!v.customerPurchases.length > 0}">
-                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
-                    <thead>
-                    <tr class="slds-text-title_caps">
-                        <th scope="col">
-                            <div class="slds-truncate" title="Product Name">Product Name</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Model">Model</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Year">Year</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="VIN">VIN</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Meeting Date">Meeting Date</div>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <aura:iteration items="{!v.customerPurchases}" var="customerPurchase" indexVar="index">
-                        <tr onclick="{!c.goToProductPage}" data-carId="{!customerPurchase.CD_Product__c}">
-                            <td data-label="Product Name">
-                                <lightning:formattedText value="{!customerPurchase.car.Name}"></lightning:formattedText>
-                            </td>
-                            <td data-label="Model">
-                                <lightning:formattedText value="{!customerPurchase.car.CD_Model__c}"></lightning:formattedText>
-                            </td>
-                            <td data-label="Year">
-                                <lightning:formattedDateTime value="{!customerPurchase.car.CD_Year__c}"></lightning:formattedDateTime>
-                            </td>
-                            <td data-label="VIN">
-                                <lightning:formattedText value="{!customerPurchase.car.CD_VIN__c}"></lightning:formattedText>
-                            </td>
-                            <td data-label="Meeting Date">
-                                <lightning:formattedDateTime day="2-digit" month="short" year="numeric"  hour="2-digit" minute="2-digit" value="{!customerPurchase.productMeeting.StartDateTime}"></lightning:formattedDateTime>
-                            </td>
-                        </tr>
-                    </aura:iteration>
-                    </tbody>
-                </table>
 
-                <aura:set attribute="else">
-                    <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
-                        <ui:outputText value="You don't have any purchased items" />
-                    </lightning:layoutItem>
-                </aura:set>
-            </aura:if>
+                <lightning:tabset selectedTabId="{!v.selectedTabId}">
+                    <lightning:tab label="In progress" id="inProgressTab" >
+                        <aura:if isTrue="{!v.customerPurchases.length > 0}">
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                                <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Product Name">Product Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Model">Model</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Year">Year</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="VIN">VIN</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Price">Price</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Meeting Date">Meeting Date</div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <aura:iteration items="{!v.customerPurchases}" var="customerPurchase" indexVar="index">
+                                    <tr onclick="{!c.goToProductPage}" data-carId="{!customerPurchase.car.Id}">
+                                        <td data-label="Product Name">
+                                            <lightning:formattedText value="{!customerPurchase.car.Name}"></lightning:formattedText>
+                                        </td>
+                                        <td data-label="Model">
+                                            <lightning:formattedText value="{!customerPurchase.car.CD_Model__c}"></lightning:formattedText>
+                                        </td>
+                                        <td data-label="Year">
+                                            <lightning:formattedDateTime value="{!customerPurchase.car.CD_Year__c}"></lightning:formattedDateTime>
+                                        </td>
+                                        <td data-label="VIN">
+                                            <lightning:formattedText value="{!customerPurchase.car.CD_VIN__c}"></lightning:formattedText>
+                                        </td>
+                                        <td data-label="Price">
+                                            <lightning:formattedNumber value="{!customerPurchase.carLowestPrice.UnitPrice}"></lightning:formattedNumber>
+                                        </td>
+                                        <td data-label="Meeting Date">
+                                            <lightning:formattedDateTime day="2-digit" month="short" year="numeric"  hour="2-digit" minute="2-digit" value="{!customerPurchase.productMeeting.StartDateTime}"></lightning:formattedDateTime>
+                                        </td>
+                                    </tr>
+                                </aura:iteration>
+                                </tbody>
+                            </table>
+
+                            <aura:set attribute="else">
+                                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                                    <ui:outputText value="You don't have any purchased items" />
+                                </lightning:layoutItem>
+                            </aura:set>
+                        </aura:if>
+                    </lightning:tab>
+                    <lightning:tab label="Bought" id="alreadyBoughtTab">
+                        <c:CD_PurchasedCars></c:CD_PurchasedCars>
+                    </lightning:tab>
+                </lightning:tabset>
+
         </lightning:layout>
     </lightning:card>
 
