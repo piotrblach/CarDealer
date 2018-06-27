@@ -6,6 +6,8 @@
     <aura:attribute name="carId" type="String"></aura:attribute>
     <aura:attribute name="recordError" type="String"></aura:attribute>
     <aura:attribute name="environmentType" type="String" default="Standard" description="This variable is used to indicate which environment this component is displayed on, f.i. community vs standard lightning" />
+    <aura:attribute name="carStandardPrice" type="String"></aura:attribute>
+    <aura:attribute name="carLowestPrice" type="PricebookEntry"></aura:attribute>
 
     <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
     <aura:handler name="init" value="{!this}" action="{!c.onCarIdChanged}"></aura:handler>
@@ -13,8 +15,8 @@
 
     <force:recordData aura:id="carDetail"
                       recordId="{!v.carId}"
-                      mode="EDIT"
-                      fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_ContentDocumentVersion__c"
+                      mode="VIEW"
+                      fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_ContentDocumentVersion__c, CD_LogoImageId__c"
                       targetError="{!v.recordError}"
                       targetFields="{!v.carToDisplay}"
                       targetRecord="{!v.car}"
@@ -25,50 +27,75 @@
     </aura:if>
 
     <aura:if isTrue="{!!v.editorVisible}">
-        <div class="slds-grid slds-grid--align-left">
-            <p class="slds-col slds-size--4-of-12 slds-p-around_small">
-                <img src="{!v.carToDisplay.CD_ContentDocumentVersion__c != null ? '/sfc/servlet.shepherd/version/download/'+v.carToDisplay.CD_ContentDocumentVersion__c : 'http://www.burtonkia.co.uk/images/car-not-found.jpg'}"/>
-            </p>
-            <p class="slds-col slds-size--4-of-12 slds-p-around_small">
-                <lightning:tile label="{!v.movieDetails.title}">
-                    <dl class="slds-dl_horizontal">
-                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Name">Name</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Name">{!v.carToDisplay.Name}</p>
-                        </dd>
-                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Model">Model</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Model">{!v.carToDisplay.CD_Model__c}</p>
-                        </dd>
-                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="VIN">VIN</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="VIN">{!v.carToDisplay.CD_VIN__c}</p>
-                        </dd>
-                        <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Year">Year</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
-                            <p class="slds-truncate" title="Year">{!v.carToDisplay.CD_Year__c}</p>
-                        </dd>
+        <lightning:card title="Basic Info" iconName="utility:travel_and_places">
+            <div class="slds-p-horizontal--small">
+                <div class="slds-grid slds-grid--align-left">
+                    <p class="slds-col slds-size--4-of-12 slds-p-around_small">
+                        <img src="{!v.carToDisplay.CD_LogoImageId__c != null ? 'https://piotrblach1-dev-ed.lightning.force.com/sfc/servlet.shepherd/document/download/'+v.carToDisplay.CD_LogoImageId__c :
+                                v.environmentType == 'Community' ?
+                                    '/CarDealerCustomers/resource/carImageNotFound' :
+                                    '/resource/carImageNotFound'}"/>
+                    </p>
+                    <p class="slds-col slds-size--6-of-12 slds-p-around_small">
+                        <lightning:tile label="{!v.movieDetails.title}">
+                            <dl class="slds-dl_horizontal">
+                                <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                    <p class="slds-truncate" title="Name">Name</p>
+                    </dt>
+                    <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Name">{!v.carToDisplay.Name}</p>
+                    </dd>
+                    <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Model">Model</p>
+                    </dt>
+                    <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Model">{!v.carToDisplay.CD_Model__c}</p>
+                    </dd>
+                    <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="VIN">VIN</p>
+                    </dt>
+                    <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="VIN">{!v.carToDisplay.CD_VIN__c}</p>
+                    </dd>
+                    <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Year">Year</p>
+                    </dt>
+                    <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Year">{!v.carToDisplay.CD_Year__c}</p>
+                    </dd>
+                    <dt class="slds-dl_horizontal__label slds-p-vertical--xx-small">
+                        <p class="slds-truncate" title="Price">Price</p>
+                    </dt>
+                    <dd class="slds-dl_horizontal__detail slds-tile__meta slds-p-vertical--xx-small">
+                        <aura:if isTrue="{!v.carStandardPrice > v.carLowestPrice.UnitPrice}">
+                            <span class="slds-truncate slds-m-right--small" style="text-decoration: line-through" title="Price">{!v.carStandardPrice}$</span>
+                            <span class="slds-truncate" title="Sale Price">{!v.carLowestPrice.UnitPrice}$</span>
+                            <aura:set attribute="else">
+                                <span class="slds-truncate slds-m-right--small" title="Price">{!v.carStandardPrice}$</span>
+                            </aura:set>
+                        </aura:if>
+                    </dd>
                     </dl>
-                </lightning:tile>
-            </p>
-            <aura:if isTrue="{!v.environmentType != 'Community'}">
-                <p class="slds-col slds-size--4-of-12 slds-p-around_small">
-                    <lightning:button onclick="{!c.setEditMode}">Update</lightning:button>
-                    <lightning:button variant="destructive" onclick="{!c.showRemovalConfirmation}">Delete</lightning:button>
-                </p>
-            </aura:if>
-        </div>
+                    </lightning:tile>
+                    </p>
+                    <aura:if isTrue="{!v.environmentType == 'Standard'}">
+                        <p class="slds-col slds-size--2-of-12 slds-p-around_small">
+                            <lightning:buttonMenu iconName="utility:settings" alternativeText="Settings">
+                                <lightning:menuItem label="Update" onactive="{!c.setEditMode}"/>
+                                <lightning:menuItem label="Delete" onactive="{!c.showRemovalConfirmation}"/>
+                            </lightning:buttonMenu>
+                        </p>
+                    </aura:if>
+                </div>
+            </div>
+        </lightning:card>
     </aura:if>
 
-    <c:CD_CarImages carId="{!v.carId}" visible="{!v.editorVisible}" environmentType="{!v.environmentType}"></c:CD_CarImages>
+    <lightning:card iconName="action:add_photo_video" title="Car Images">
+        <div class="slds-p-horizontal--small">
+            <c:CD_CarImages carId="{!v.carId}" visible="{!v.editorVisible}" environmentType="{!v.environmentType}"></c:CD_CarImages>
+        </div>
+    </lightning:card>
 
     <c:CD_Modal aura:id="removalConfirmationModal" hasCloseButton="true" title="Removal confirmation">
         Do you really want to remove this record?
@@ -77,5 +104,7 @@
             <lightning:button class="slds-button--destructive" onclick="{!c.deleteCar}">Delete</lightning:button>
         </aura:set>
     </c:CD_Modal>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
 
 </aura:component>

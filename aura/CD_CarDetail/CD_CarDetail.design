@@ -1,4 +1,4 @@
 
 <design:component>
-    <design:attribute name="environmentType" label="Environment Type" datasource="Community,Standard" description="Please indicate which environment this component is hosted on."/>
+    <design:attribute name="environmentType" label="Environment Type" datasource="Community,Standard, Standalone, CommunityStandardPage" description="Please indicate which environment this component is hosted on."/>
 </design:component>
