@@ -1,0 +1,21 @@
+
+<aura:component description="CD_CasesMain" implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="selectedTabId" type="String" default="activeCases"/>
+    <aura:attribute name="availableProducts" type="Product2[]"/>
+
+    <lightning:card title="Cases" iconName="standard:lead_list" class="slds-tabs_card">
+        <lightning:tabset selectedTabId="{!v.selectedTabId}">
+            <lightning:tab label="Active cases" id="activeCases" >
+                <c:CD_ActiveCases></c:CD_ActiveCases>
+            </lightning:tab>
+            <lightning:tab label="Solved cases" id="solvedCases">
+                <c:CD_SolvedCases></c:CD_SolvedCases>
+            </lightning:tab>
+        </lightning:tabset>
+        <aura:set attribute="actions">
+            <lightning:button label="New case" disabled="{!!v.availableProducts.length > 0}" onclick="{!c.showCreateCaseModal}"/>
+        </aura:set>
+    </lightning:card>
+
+    <c:CD_CreateCase availableProducts="{!v.availableProducts}" aura:id="createCaseModal"/>
+</aura:component>
