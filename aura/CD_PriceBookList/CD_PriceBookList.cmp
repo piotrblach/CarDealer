@@ -1,0 +1,75 @@
+
+<aura:component description="CD_PriceBookList" controller="CD_PriceBookController">
+    <aura:attribute name="priceBooks" type="Pricebook2[]"/>
+    <aura:attribute name="priceBookIdForAction" type="String"/>
+    <aura:attribute name="displayDetailSection" type="Boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:CD_NewDiscountCreatedEvent" action="{!c.onNewDiscountCreatedAction}"/>
+    <aura:registerEvent name="PriceBookListItemClicked" type="c:CD_PriceBookListItemClicked"/>
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.priceBooks.length > 0}">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Model">Model</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Discount type">Discount type</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Discount value">Discount value</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Actions">Actions</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <aura:iteration items="{!v.priceBooks}" var="priceBook" indexVar="index">
+                    <tr>
+                        <td data-label="Name">
+                            <lightning:formattedText value="{!priceBook.Name}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Model">
+                            <lightning:formattedText value="{!priceBook.CD_DiscountModel__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Discount type">
+                            <lightning:formattedText value="{!priceBook.CD_DiscountType__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Discount value">
+                            <lightning:formattedNumber value="{!priceBook.CD_DiscountValue__c}"></lightning:formattedNumber>
+                        </td>
+                        <td data-label="Actions">
+                            <lightning:buttonMenu iconName="utility:settings" alternativeText="Settings">
+                                <lightning:menuItem label="Go to price book" onactive="{!c.goToPriceBook}" value="{!priceBook.Id}"/>
+                                <lightning:menuItem label="Display items" onactive="{!c.displayPriceBookEntries}" value="{!priceBook.Id}"/>
+                                <lightning:menuItem label="Delete" onactive="{!c.showRemovalConfirmation}" value="{!priceBook.Id}"/>
+                            </lightning:buttonMenu>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                </tbody>
+            </table>
+
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="No pricebooks found" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+    </lightning:layout>
+
+    <c:CD_Modal aura:id="removalConfirmationModal" hasCloseButton="true" title="Removal confirmation">
+        Do you really want to remove this record?
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideRemovalConfirmation}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.onDeletePriceBook}">Delete</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+</aura:component>
