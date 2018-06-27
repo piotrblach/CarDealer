@@ -1,15 +1,12 @@
-<!--
- - Created by BRITENET on 25.05.2018.
- -->
 
 <aura:component description="CD_EditCar" controller="CD_CarsManagerController">
     <aura:attribute name="car" type="Product2"></aura:attribute>
     <aura:attribute name="editedCar" type="Product2"></aura:attribute>
     <aura:attribute name="carId" type="String"></aura:attribute>
     <aura:attribute name="visible" type="Boolean"></aura:attribute>
-    <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
     <aura:attribute name="isRecordLoaded" type="Boolean" default="false"></aura:attribute>
     <aura:attribute name="recordError" type="String" />
+    <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
 
     <force:recordData aura:id="carEditor"
                       fields="Id, Name, CD_Model__c, CD_VIN__c, CD_Year__c"

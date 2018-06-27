@@ -2,7 +2,7 @@
 ({
     loadCarModelOptions: function(component){
         let action = component.get("c.getCarModels");
-        let carModelInputSelect = component.find("addCarModelInputSelect");
+        let carModelInputSelect = component.find("editCarModelInputSelect");
         let carModelOptions=[];
         action.setCallback(this, function(response) {
             let modelOptions = response.getReturnValue();
