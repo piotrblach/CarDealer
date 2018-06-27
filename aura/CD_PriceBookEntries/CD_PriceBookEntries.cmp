@@ -1,0 +1,89 @@
+
+<aura:component description="CD_PriceBookEntries" controller="CD_PriceBookController">
+    <aura:attribute name="priceBookEntries" type="Object[]"/>
+    <aura:attribute name="priceBookId" type="String"/>
+    <aura:attribute name="priceBookEntryIdForAction" type="String"/>
+    <aura:attribute name="priceBookEntryEditedPrice" type="Decimal"/>
+    <aura:attribute name="displayAddCarsToDiscountModal" type="Boolean" default="false"/>
+    <aura:handler name="change" value="{!v.priceBookId}" action="{!c.priceBookIdChanged}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="NewPriceBookEntryCreated" event="c:CD_NewPriceBookEntryCreated" action="{!c.onNewPriceBookEntryCreated}"/>
+    <aura:method name="showAddCarsToDiscountModal" action="{!c.onShowAddCarsToDiscountModal}"/>
+
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.priceBookEntries.length > 0}">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Model">Model</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Year">Year</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Price">Price</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Actions">Actions</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <aura:iteration items="{!v.priceBookEntries}" var="priceBookEntry" indexVar="index">
+                    <tr>
+                        <td data-label="Name">
+                            <lightning:formattedText value="{!priceBookEntry.car.Name}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Model">
+                            <lightning:formattedText value="{!priceBookEntry.car.CD_Model__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Year">
+                            <lightning:formattedDateTime value="{!priceBookEntry.car.CD_Year__c}"></lightning:formattedDateTime>
+                        </td>
+                        <td data-label="Price">
+                            <lightning:formattedNumber value="{!priceBookEntry.priceBookEntry.UnitPrice}"></lightning:formattedNumber>
+                        </td>
+                        <td data-label="Actions">
+                            <lightning:buttonMenu iconName="utility:settings" alternativeText="Settings">
+                                <lightning:menuItem label="See details" onactive="{!c.goToProductPage}" value="{!priceBookEntry.car.Id}"/>
+                                <lightning:menuItem label="Edit price" onactive="{!c.showPriceBookEntryPriceUpdateModal}" value="{!index}"/>
+                                <lightning:menuItem label="Delete" onactive="{!c.showRemovalConfirmation}" value="{!priceBookEntry.priceBookEntry.Id}"/>
+                            </lightning:buttonMenu>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                </tbody>
+            </table>
+
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="No pricebook items found" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+    </lightning:layout>
+
+    <c:CD_Modal aura:id="removalConfirmationModal" hasCloseButton="true" title="Removal confirmation">
+        Do you really want to remove this record?
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideRemovalConfirmation}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.onDeletePriceBookEntry}">Delete</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_Modal aura:id="priceBookEntryPriceEditModal" hasCloseButton="true" title="Edit discount price">
+        <lightning:input label="Price" type="number" value="{!v.priceBookEntryEditedPrice}"/>
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hidePriceBookEntryPriceUpdateModal}">Cancel</lightning:button>
+            <lightning:button class="slds-button--destructive" onclick="{!c.onUpdatePriceBookEntry}">Save</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_AddCarsToDiscount displayModal="{!v.displayAddCarsToDiscountModal}" priceBookId="{!v.priceBookId}"></c:CD_AddCarsToDiscount>
+
+</aura:component>
