@@ -11,7 +11,7 @@
     <aura:handler name="change" value="{!v.carId}" action="{!c.onCarIdChanged}"></aura:handler>
     <aura:handler name="init" value="{!this}" action="{!c.onCarIdChanged}"></aura:handler>
 
-    <aura:if isTrue="{!v.environmentType != 'Community'}">
+    <aura:if isTrue="{!v.environmentType == 'Standard'}">
         <div class="slds-form-element__row slds-grid_align-center">
             <lightning:fileUpload label="Add images"
                                   multiple="true"
@@ -24,7 +24,7 @@
 
     <force:recordData aura:id="recordImages"
                       recordId="{!v.carId}"
-                      mode="EDIT"
+                      mode="VIEW"
                       fields="Id, Name, CD_VIN__c, CD_Year__c, CD_Model__c, CD_LogoImageId__c, CD_ContentDocumentVersion__c"
                       targetError="{!v.recordError}"
                       targetFields="{!v.carToDisplay}"
@@ -32,15 +32,12 @@
                       recordUpdated="{!c.xxx}"
     />
 
-
-
-
     <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
         <aura:if isTrue="{!v.images.length > 0}">
 
             <aura:iteration items="{!v.images}" var="image">
                 <lightning:layoutItem flexibility="grow" class="slds-m-around_large slds-align-middle" >
-                    <img src="{!'/sfc/servlet.shepherd/document/download/'+image.ContentDocumentId}"
+                    <img src="{!'https://piotrblach1-dev-ed.lightning.force.com/sfc/servlet.shepherd/document/download/'+image.ContentDocumentId}"
                     />
                     <!--<lightning:fileCard fileId="{!image.ContentDocumentId}"></lightning:fileCard>-->
                     <aura:if isTrue="{!and(image.ContentDocumentId != v.carToDisplay.CD_LogoImageId__c, v.environmentType != 'Community')}">
@@ -49,19 +46,6 @@
                     </aura:if>
                 </lightning:layoutItem>
             </aura:iteration>
-
-            <!--<div style="width: 100%; height: 300px;">-->
-                <!--<lightning:carousel disableAutoRefresh="true">-->
-                    <!--<aura:iteration items="{!v.images}" var="image">-->
-                        <!--<lightning:carouselImage-->
-                                <!--src = "{!'https://piotrblach1-dev-ed.lightning.force.com/sfc/servlet.shepherd/document/download/'+image.ContentDocumentId}"-->
-                                <!--header = "First Card"-->
-                                <!--description = "First card description."-->
-                                <!--alternativeText = "First card accessible description.">-->
-                        <!--</lightning:carouselImage>-->
-                    <!--</aura:iteration>-->
-                <!--</lightning:carousel>-->
-            <!--</div>            -->
 
             <aura:set attribute="else">
                 <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
