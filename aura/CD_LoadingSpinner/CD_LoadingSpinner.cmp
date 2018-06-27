@@ -1,6 +1,3 @@
-<!--
- - Created by BRITENET on 14.05.2018.
- -->
 
 <aura:component description="CD_LoadingSpinner" implements="flexipage:availableForAllPageTypes">
     <aura:attribute name="visible" type="Boolean" default="false"/>
@@ -9,10 +6,6 @@
     <aura:method name="hide" action="{!c.hide}"/>
 
     <aura:if isTrue="{!v.visible}">
-        
-        <!--<aura:set attribute="body"></aura:set>-->
-        <!--<span id="Accspinner" style="display:none;position:fixed;width: 100%;height: 100%;z-index:1000;background-color:rgba(0, 0, 0, 0.01); ">-->
-            <lightning:spinner variant="brand" size="large"/>
-        <!--</span>-->
+        <lightning:spinner variant="brand" size="large"/>
     </aura:if>
 </aura:component>
