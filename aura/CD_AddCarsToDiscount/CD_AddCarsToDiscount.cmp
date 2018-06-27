@@ -1,0 +1,86 @@
+
+<aura:component description="CD_AddCarsToDiscount" controller="CD_PriceBookController">
+    <aura:attribute name="displayModal" type="Boolean" default="false"/>
+    <aura:attribute name="cars" type="Object[]"/>
+    <aura:attribute name="selectedCarsIds" type="String[]"/>
+    <aura:attribute name="priceBookId" type="String"/>
+    <aura:handler event="c:CD_SearchCarsFormSubmitEvent" action="{!c.onSearchCarsFormSubmit}"></aura:handler>
+    <aura:registerEvent name="NewPriceBookEntryCreated" type="c:CD_NewPriceBookEntryCreated"/>
+
+    <c:CD_Modal aura:id="addCarsToDiscount" hasCloseButton="true" size="large" visible="{!v.displayModal}" title="Add Cars to Discount">
+        <div class="slds-p-horizontal--small">
+            <c:CD_CarSearchForm ></c:CD_CarSearchForm>
+            <aura:if isTrue="{!v.cars.length > 0}">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Select">Select</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Product Name">Product Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Model">Model</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Year">Year</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="VIN">VIN</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Standard price">Standard price</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Discount price">Discount price</div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <aura:iteration items="{!v.cars}" var="car" indexVar="index">
+                        <tr>
+                            <td data-label="Select">
+                                <!--<ui:inputCheckbox value="{!meetingToAssign.selected}" click="{!c.toggleSelected}"></ui:inputCheckbox>-->
+                                <lightning:input type="checkbox-button" onchange="{!c.toggleSelected}" value="{!car.car.Id}"></lightning:input>
+                            </td>
+                            <td data-label="Product Name">
+                                <lightning:formattedText value="{!car.car.Name}"></lightning:formattedText>
+                            </td>
+                            <td data-label="Model">
+                                <lightning:formattedText value="{!car.car.CD_Model__c}"></lightning:formattedText>
+                            </td>
+                            <td data-label="Year">
+                                <lightning:formattedDateTime value="{!car.car.CD_Year__c}"></lightning:formattedDateTime>
+                            </td>
+                            <td data-label="VIN">
+                                <lightning:formattedText value="{!car.car.CD_VIN__c}"></lightning:formattedText>
+                            </td>
+                            <td data-label="Standard price">
+                                <lightning:formattedNumber value="{!car.carStandardPrice}"></lightning:formattedNumber>
+                            </td>
+                            <td data-label="Discount price">
+                                <ui:inputNumber value="{!car.newDiscountPrice}"></ui:inputNumber>
+                                <!--<lightning:formattedDateTime day="2-digit" month="short" year="numeric"  hour="2-digit" minute="2-digit" value="{!meetingToAssign.productMeeting.StartDateTime}"></lightning:formattedDateTime>-->
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                    </tbody>
+                </table>
+                <aura:set attribute="else">
+                    <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                        <ui:outputText value="There are no cars available to add to this discount" />
+                    </lightning:layoutItem>
+                </aura:set>
+            </aura:if>
+        </div>
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideAddCarsToDiscountModal}">Cancel</lightning:button>
+            <lightning:button class="slds-button--brand" onclick="{!c.addSelectedCarsToDiscount}">Add</lightning:button>
+        </aura:set>
+
+        <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+    </c:CD_Modal>
+
+</aura:component>
