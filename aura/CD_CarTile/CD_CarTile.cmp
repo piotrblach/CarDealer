@@ -7,9 +7,12 @@
     <aura:attribute name="selected" type="Boolean" default="false" />
     <aura:attribute name="recordError" type="String"></aura:attribute>
     <aura:attribute name="environmentType" type="String" description="This variable is used to indicate which environment this component is displayed on, f.i. community vs standard lightning" />
+    <aura:attribute name="carStandardPrice" type="Currency"></aura:attribute>
+    <aura:attribute name="carLowestPrice" type="PricebookEntry"></aura:attribute>
     <aura:registerEvent name="CarClicked" type="c:CD_CarClicked"/>
     <aura:registerEvent name="CarRemovedEvent" type="c:CD_CarRemovedEvent"></aura:registerEvent>
     <aura:handler event="c:CD_CarUpdated" action="{!c.onCarUpdated}"></aura:handler>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
 
     <force:recordData aura:id="recordRemover"
                       recordId="{!v.carId}"
@@ -28,11 +31,29 @@
                             'background-image:url(\'/resource/carImageNotFound\')'}"
                  class="innertile" onclick="{!c.onCarClicked}"></div>
 
+            <aura:if isTrue="{!v.carStandardPrice > v.carLowestPrice.UnitPrice}">
+                <div class="upper-third">
+                    <h1 class="slds-truncate">
+                        SALE: {!v.carLowestPrice.UnitPrice}$
+                    </h1>
+                </div>
+            </aura:if>
+
             <div class="under-third">
                 <h1 class="slds-truncate">
                     <div class="slds-grid slds-grid--align-spread">
                         <p class="slds-col slds-size--10-of-12 slds-truncate">
-                                {!v.carToDisplay.Name}
+                        <!--<div class="slds-form-element__row slds-grid_vertical-align-end">-->
+                            <!--{!v.carToDisplay.Name}-->
+                        <!--</div>-->
+                        <!--<div class="slds-form-element__row">-->
+                            <!--<aura:if isTrue="{!v.carStandardPrice != v.carLowestPrice}">-->
+                                <!--<p style="text-decoration: line-through">{!v.carStandardPrice}$</p>-->
+                            <!--</aura:if>-->
+                            <!--{!v.carLowestPrice}$-->
+                        <!--</div>-->
+                            {!v.carToDisplay.Name} - {!v.carStandardPrice}$
+
                         </p>
                         <p class="slds-col slds-size--2-of-12">
                             <aura:if isTrue="{!v.environmentType != 'Community'}">

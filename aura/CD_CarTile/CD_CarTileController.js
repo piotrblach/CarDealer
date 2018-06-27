@@ -1,5 +1,9 @@
 
 ({
+    doInit: function(component, event, helper){
+        helper.loadCarStandardPrice(component);
+        helper.loadCarLowestPrice(component);
+    },
     onCarClicked: function(component, event, helper){
         let envType = component.get("v.environmentType");
         if(envType === 'Community'){

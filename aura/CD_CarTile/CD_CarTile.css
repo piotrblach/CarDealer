@@ -37,10 +37,10 @@
 .THIS .upper-third {
     position: absolute;
     top: 0;
-    left: 200;
+    left: 0;
     right: 0;
     color: #FFFFFF;
-    background-color: rgba(0, 0, 0, .4);
+    background-color: rgba(240, 45, 45);
     padding: 6px 8px;
 }
 
