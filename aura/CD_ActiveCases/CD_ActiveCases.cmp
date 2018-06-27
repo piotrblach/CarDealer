@@ -1,0 +1,67 @@
+
+<aura:component description="CD_ActiveCases" controller="CD_CasesController">
+    <aura:attribute name="activeCases" type="Case[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:CD_NewCaseCreated" action="{!c.onNewCaseCreated}"/>
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.activeCases.length > 0}">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Number">Number</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Car">Car</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Subject">Subject</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Description">Description</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Date opened">Date opened</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Status">Status</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <aura:iteration items="{!v.activeCases}" var="activeCase" indexVar="index">
+                    <tr onclick="{!c.goToCaseDetailPage}" data-caseId="{!activeCase.Id}">
+                        <td data-label="Number">
+                            <lightning:formattedText value="{!activeCase.CaseNumber}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Car">
+                            <lightning:formattedText value="{!activeCase.CD_Car__r.Name}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Subject">
+                            <lightning:formattedText value="{!activeCase.Subject}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Description">
+                            <lightning:formattedText value="{!activeCase.Description}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Date opened">
+                            <lightning:formattedDateTime value="{!activeCase.CreatedDate}"></lightning:formattedDateTime>
+                        </td>
+                        <td data-label="Status">
+                            <lightning:formattedText value="{!activeCase.Status}"></lightning:formattedText>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                </tbody>
+            </table>
+
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="No active cases found" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+
+    </lightning:layout>
+
+</aura:component>
