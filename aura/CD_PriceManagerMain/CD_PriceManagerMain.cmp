@@ -1,0 +1,38 @@
+
+<aura:component description="CD_PriceManagerMain" implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="displayDetailSection" type="Boolean"  default="false"/>
+    <aura:attribute name="clickedPriceBookId" type="String"/>
+    <aura:handler name="PriceBookListItemClicked" event="c:CD_PriceBookListItemClicked" action="{!c.onPriceBookListItemClicked}"></aura:handler>
+
+        <lightning:layout horizontalAlign="center" verticalAlign="start">
+            <lightning:layoutItem size="{! v.displayDetailSection == true ? 6 : 12 }">
+                <lightning:card title="Price Books List" iconName="standard:groups" class="slds-tabs_card slds-m-horizontal--small">
+                    <p class="slds-p-horizontal_small">
+                        <c:CD_PriceBookList displayDetailSection="{!v.displayDetailSection}"/>
+                    </p>
+                    <aura:set attribute="actions">
+                        <lightning:button label="New discount" onclick="{!c.showDiscountCreationModal}"></lightning:button>
+                    </aura:set>
+                </lightning:card>
+            </lightning:layoutItem>
+
+            <aura:if isTrue="{!v.displayDetailSection}">
+                <lightning:layoutItem size="6">
+                    <lightning:card title="Price Book Entries" iconName="standard:contact" class="slds-tabs_card slds-m-horizontal--small">
+                        <aura:set attribute="actions">
+                            <lightning:button label="Hide" onclick="{!c.hideDetailsSectionAction}"/>
+                            <lightning:button label="Add cars" onclick="{!c.showAddCarsToDiscountModal}"/>
+                        </aura:set>
+                        <p class="slds-p-horizontal_small">
+                            <c:CD_PriceBookEntries aura:id="addPriceBookItemsModal" priceBookId="{!v.clickedPriceBookId}"/>
+                        </p>
+                    </lightning:card>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+
+    <c:CD_CreateDiscount aura:id="discountCreationComponent"/>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>
