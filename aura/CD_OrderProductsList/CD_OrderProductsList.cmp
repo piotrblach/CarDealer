@@ -1,0 +1,68 @@
+
+<aura:component description="CD_OrderProductsList" controller="CD_OrdersController">
+    <aura:attribute name="orderProducts" type="OrderItem[]"/>
+    <aura:attribute name="orderId" type="String"/>
+    <aura:attribute name="displayDetailSection" type="Boolean"/>
+    <aura:handler name="change" value="{!v.orderId}" action="{!c.orderIdChanged}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+        <aura:if isTrue="{!v.orderProducts.length > 0}">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Model">Model</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Year">Year</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="VIN">VIN</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Standard Price">Standard Price</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Final Price">Final Price</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <aura:iteration items="{!v.orderProducts}" var="orderProduct" indexVar="index">
+                    <tr onclick="{!c.goToProductPage}" data-carId="{!orderProduct.orderItemProduct.Id}">
+                        <td data-label="Name">
+                            <lightning:formattedText value="{!orderProduct.orderItemProduct.Name}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Model">
+                            <lightning:formattedText value="{!orderProduct.orderItemProduct.CD_Model__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Year">
+                            <lightning:formattedDateTime value="{!orderProduct.orderItemProduct.CD_Year__c}"></lightning:formattedDateTime>
+                        </td>
+                        <td data-label="VIN">
+                            <lightning:formattedText value="{!orderProduct.orderItemProduct.CD_VIN__c}"></lightning:formattedText>
+                        </td>
+                        <td data-label="Standard Price">
+                            <lightning:formattedNumber value="{!orderProduct.orderItem.ListPrice}"></lightning:formattedNumber>
+                        </td>
+                        <td data-label="Final Price">
+                            <lightning:formattedNumber value="{!orderProduct.orderItem.UnitPrice}"></lightning:formattedNumber>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                </tbody>
+            </table>
+
+            <aura:set attribute="else">
+                <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                    <ui:outputText value="No order items found" />
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+    </lightning:layout>
+
+</aura:component>
