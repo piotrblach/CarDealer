@@ -1,0 +1,78 @@
+
+<aura:component description="CD_CreateDiscount" controller="CD_PriceBookController">
+    <aura:attribute name="options" type="List" default="[
+        {'label': 'Percentage', 'value': 'percentage'},
+        {'label': 'Amount', 'value': 'amount'}
+    ]"/>
+    <aura:attribute name="newPriceBookActiveStartDate" type="Date"/>
+    <aura:attribute name="newPriceBookActiveEndDate" type="Date"/>
+    <aura:attribute name="newPriceBookDiscountType" type="Boolean"/>
+    <aura:attribute name="newPriceBookDiscountValue" type="Double"/>
+    <aura:attribute name="newPriceBookProductionStartDate" type="Date"/>
+    <aura:attribute name="newPriceBookProductionEndDate" type="Date"/>
+    <aura:attribute name="newPriceBookCarModel" type="String"/>
+    <aura:attribute name="newPriceBookName" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:method name="showCreateNewPriceBookForm" action="{!c.showCreateNewPriceBookForm}"/>
+    <aura:registerEvent name="NewDiscountCreatedEvent" type="c:CD_NewDiscountCreatedEvent"/>
+
+    <c:CD_Modal aura:id="createNewPricebookModal" hasCloseButton="true" title="Create new discount">
+        <div class="slds-p-horizontal--small">
+
+            <fieldset class="slds-form--compound">
+                <div class="slds-form-element__group">
+                    <div class="slds-form-element__row slds-grid_vertical-align-end">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <ui:inputDate aura:id="newCarFormField" label="Active start date" required="true" value="{!v.newPriceBookActiveStartDate}" displayDatePicker="true"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <ui:inputDate aura:id="newCarFormField" label="Active end date" required="true" value="{!v.newPriceBookActiveEndDate}" displayDatePicker="true"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row slds-grid_vertical-align-end">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:radioGroup name="radioGroup"
+                                                  label="Radio Group"
+                                                  options="{! v.options }"
+                                                  value="{!v.newPriceBookDiscountType}"
+                                                  type="radio"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input aura:id="newCarFormField" label="Discount value" required="true" value="{!v.newPriceBookDiscountValue}"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row slds-grid_vertical-align-end">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <ui:inputDate aura:id="newCarFormField" label="Production start date" value="{!v.newPriceBookProductionStartDate}" displayDatePicker="true"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <ui:inputDate aura:id="newCarFormField" label="Production end date" value="{!v.newPriceBookProductionEndDate}" displayDatePicker="true"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row slds-grid_vertical-align-start">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <ui:inputSelect label="Model" value="{!v.newPriceBookCarModel}" aura:id="carModelInputSelect"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <lightning:input aura:id="newCarFormField" label="Discount name" required="true" value="{!v.newPriceBookName}"/>
+                        </div>
+                    </div>
+                </div>
+                <aura:if isTrue="{!not(empty(v.recordError))}">
+                    <div class="recordError">
+                            {!v.recordError}
+                    </div>
+                </aura:if>
+            </fieldset>
+
+        </div>
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideDiscountCreationModal}">Cancel</lightning:button>
+            <lightning:button class="slds-button--brand" onclick="{!c.onCreatePriceBook}">Save</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>
