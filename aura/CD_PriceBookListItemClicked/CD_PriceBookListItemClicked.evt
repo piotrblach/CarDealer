@@ -1,0 +1,4 @@
+
+<aura:event type="COMPONENT" description="CD_PriceBookListItemClicked">
+    <aura:attribute name="priceBookId" type="String"/>
+</aura:event>
