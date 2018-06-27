@@ -38,6 +38,4 @@ public with sharing class CD_PostToChatterFromProcessBuilder {
         }
         else return null;
     }
-
-
 }

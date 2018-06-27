@@ -1,6 +1,3 @@
-/**
- * Created by BRITENET on 09.04.2018.
- */
 
 public with sharing class MC_PublicPageController {
     public List<MC_Mechanic__c> allMechanics {get; set;}
