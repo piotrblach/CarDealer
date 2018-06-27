@@ -1,0 +1,64 @@
+
+<aura:component description="CD_PurchasedCars" controller="CD_OrdersController">
+    <aura:attribute name="orders" type="Order[]"/>
+    <aura:attribute name="priceBookIdForAction" type="String"/>
+    <aura:attribute name="displayDetailSection" type="Boolean"  default="false"/>
+    <aura:attribute name="selectedOrderId" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:layout horizontalAlign="center" verticalAlign="start">
+        <lightning:layoutItem size="{! v.displayDetailSection == true ? 6 : 12 }">
+            <lightning:card title="My orders" iconName="standard:groups" class="slds-tabs_card slds-m-horizontal--small">
+                <lightning:layout horizontalAlign="center" verticalAlign="center" multipleRows='true'>
+                    <aura:if isTrue="{!v.orders.length > 0}">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--small">
+                            <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Number">Number</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Order date">Order date</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Total amount">Total amount</div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <aura:iteration items="{!v.orders}" var="order" indexVar="index">
+                                <tr onclick="{!c.orderClicked}" data-orderId="{!order.Id}">
+                                    <td data-label="Number">
+                                        <lightning:formattedText value="{!order.OrderNumber}"></lightning:formattedText>
+                                    </td>
+                                    <td data-label="Production date from">
+                                        <lightning:formattedDateTime day="2-digit" month="short" year="numeric" value="{!order.CreatedDate}"></lightning:formattedDateTime>
+                                    </td>
+                                    <td data-label="Total amount">
+                                        <lightning:formattedNumber value="{!order.TotalAmount}"></lightning:formattedNumber>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                            </tbody>
+                        </table>
+
+                        <aura:set attribute="else">
+                            <lightning:layoutItem class="slds-align_absolute-center" flexibility="auto" padding="around-small">
+                                <ui:outputText value="No purchased cars found" />
+                            </lightning:layoutItem>
+                        </aura:set>
+                    </aura:if>
+                </lightning:layout>
+            </lightning:card>
+        </lightning:layoutItem>
+
+        <aura:if isTrue="{!v.displayDetailSection}">
+            <lightning:layoutItem size="6">
+                <lightning:card title="Order Items" iconName="standard:contact" class="slds-tabs_card slds-m-horizontal--small">
+                    <c:CD_OrderProductsList orderId="{!v.selectedOrderId}" displayDetailSection="{!v.displayDetailSection}"></c:CD_OrderProductsList>
+                </lightning:card>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+
+</aura:component>
