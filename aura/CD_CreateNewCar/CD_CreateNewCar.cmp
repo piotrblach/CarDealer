@@ -18,6 +18,7 @@
     <aura:attribute name="deleteRecordError" type="String" />
     <aura:attribute name="isRecordLoaded" type="Boolean" default="false"></aura:attribute>
     <aura:attribute name="recordError" type="String" />
+    <aura:attribute name="newCarPrice" type="String"></aura:attribute>
     <aura:registerEvent name="CarRemovedEvent" type="c:CD_CarRemovedEvent"></aura:registerEvent>
     <aura:registerEvent name="CarClicked" type="c:CD_CarClicked"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
@@ -58,6 +59,11 @@
                             </div>
                             <div class="slds-form-element slds-size--1-of-2">
                                 <ui:inputSelect label="Model" value="{!v.newCar.CD_Model__c}" required="true" aura:id="addCarModelInputSelect"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <lightning:input aura:id="newCarFormField" label="Price" required="true" value="{!v.newCarPrice}"/>
                             </div>
                         </div>
                         <div class="slds-form-element__row slds-grid_align-center">

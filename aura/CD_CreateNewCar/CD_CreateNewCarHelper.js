@@ -52,6 +52,7 @@
             if (saveResult.state === "SUCCESS" || saveResult.state === "DRAFT") {
                 helper.initializeNewRecord(component);
                 component.set("v.carId", saveResult.recordId);
+                helper.setNewCarStandardPrice(component, saveResult.recordId);
                 component.find("recordRemover").reloadRecord(true);
                 component.set("v.step", 'images');
             } else if (saveResult.state === "INCOMPLETE") {
@@ -61,11 +62,11 @@
             } else if (saveResult.state === "ERROR") {
                 type = "error";
                 title = 'Problem saving car';
-                message = 'Problem saving car, error: ' + JSON.stringify(saveResult.error);
+                message = 'Problem saving car';
             } else {
                 type = "error";
                 title = 'Unknown problem';
-                message = 'Unknown problem, state: ' + saveResult.state +', error: ' + JSON.stringify(saveResult.error);
+                message = 'Unknown problem';
             }
             if(message != null){
                 let resultsToast = $A.get("e.force:showToast");
@@ -95,11 +96,11 @@
             } else if (saveResult.state === "ERROR") {
                 type = "error";
                 title = 'Problem saving car';
-                message = 'Problem saving car, error: ' + JSON.stringify(saveResult.error);
+                message = 'Problem saving car';
             } else {
                 type = "error";
                 title = 'Unknown problem';
-                message = 'Unknown problem, state: ' + saveResult.state +', error: ' + JSON.stringify(saveResult.error);
+                message = 'Unknown problem';
             }
             let resultsToast = $A.get("e.force:showToast");
             resultsToast.setParams({
@@ -137,6 +138,33 @@
                         "type": "error",
                         "title": "Error",
                         "message": "IError when setting primary image"
+                    });
+                    resultsToast.fire();
+                }
+            }
+        });
+        $A.enqueueAction(action);
+    },
+    setNewCarStandardPrice: function(component, carId){
+        let action = component.get('c.setCarStandardPrice');
+        let price = component.get("v.newCarPrice");
+        action.setParams({
+            carId: carId,
+            price: price
+        })
+
+        action.setCallback(this, function(response){
+            let state = response.getState();
+            if (state !== "SUCCESS")
+            {
+                let resultsToast = $A.get("e.force:showToast");
+                if ($A.util.isUndefined(resultsToast)){
+                    alert('Error when setting price');
+                }else{
+                    resultsToast.setParams({
+                        "type": "error",
+                        "title": "Error",
+                        "message": "Error when setting price"
                     });
                     resultsToast.fire();
                 }
