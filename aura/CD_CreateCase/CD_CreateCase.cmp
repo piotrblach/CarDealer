@@ -1,0 +1,64 @@
+
+<aura:component description="CD_CreateCase" controller="CD_CasesController">
+    <aura:attribute name="availableProducts" type="Product2[]"/>
+    <aura:attribute name="newCase" type="Case"
+                    default="{
+            'sobjectType': 'Case',
+            'Subject': '',
+            'Description': '',
+            'Type': '',
+            'Reason': '',
+            'Car': ''
+        }"
+    />
+    <aura:attribute name="recordError" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:method name="showCreateNewCaseModal" action="{!c.showCreateNewCaseModal}"/>
+    <aura:registerEvent name="NewCaseCreatedEvent" type="c:CD_NewCaseCreated"/>
+
+    <c:CD_Modal aura:id="createNewCaseModal" hasCloseButton="true" title="Create new case">
+            <div class="slds-p-horizontal--small">
+
+                <fieldset class="slds-form--compound">
+                    <div class="slds-form-element__group">
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <ui:inputSelect label="Type" value="{!v.newCase.Type}" required="true" aura:id="caseTypeInputSelect"/>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <ui:inputSelect label="Reason" value="{!v.newCase.Reason}" required="true" aura:id="caseReasonInputSelect"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <lightning:input aura:id="newCaseForm" label="Subject" required="true" value="{!v.newCase.Subject}"/>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <ui:inputSelect label="Product" value="{!v.newCase.CD_Car__c}" required="true" aura:id="caseProductInputSelect"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row slds-grid_vertical-align-end">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <lightning:textarea aura:id="newCaseForm" label="Description" required="true" value="{!v.newCase.Description}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <aura:if isTrue="{!not(empty(v.recordError))}">
+                        <div class="recordError">
+                                {!v.recordError}
+                        </div>
+                    </aura:if>
+                </fieldset>
+
+            </div>
+
+        <aura:set attribute="footer">
+            <lightning:button onclick="{!c.hideCreateNewCaseModal}">Cancel</lightning:button>
+            <lightning:button class="slds-button--brand" onclick="{!c.onCreateCase}">Save</lightning:button>
+        </aura:set>
+    </c:CD_Modal>
+
+    <c:CD_LoadingSpinner aura:id="loadingSpinner"></c:CD_LoadingSpinner>
+
+</aura:component>
